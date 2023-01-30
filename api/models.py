@@ -1,6 +1,6 @@
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.db import models
-from django.utils.timezone import now
+from django.utils.timezone import localdate, localtime
 
 # Create your models here.
 class BaseModel(models.Model):
@@ -12,7 +12,7 @@ class BaseModel(models.Model):
         abstract = True
 
     def delete(self, using=None, keep_parents=False):
-        self.deleted_at = now
+        self.deleted_at = localtime
         self.save(update_fields=['deleted_at'])
 
 class UserManager(BaseUserManager):
@@ -81,8 +81,8 @@ class Group(BaseModel):
 class Trip(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     place = models.CharField(max_length=50)
-    departing_date = models.DateField(default=now)
-    arriving_date = models.DateField(default=now)
+    departing_date = models.DateField(default=localdate)
+    arriving_date = models.DateField(default=localdate)
     thumbnail = models.TextField()
 
 
