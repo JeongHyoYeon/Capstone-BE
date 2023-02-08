@@ -33,7 +33,7 @@ class GroupView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def patch(self, request):
-        group_instance = get_object_or_404(Group, user=request.user.id)
+        group_instance = get_object_or_404(Group, id=request.data['group_id'])
         serializer = GroupSerializer(instance=group_instance, data={"is_confirmed": True}, partial=True)
         if serializer.is_valid():
             serializer.save()
