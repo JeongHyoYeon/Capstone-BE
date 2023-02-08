@@ -5,8 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.hashers import make_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .serializers import *
-from datetime import datetime, timedelta
+from ..serializers import *
 import requests
 import re
 
