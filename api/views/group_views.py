@@ -4,7 +4,13 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from ..serializers import *
 
-class NewGroupView(APIView):
+
+class GroupView(APIView):
+    def get(self, request):
+        group_list = Group.objects.filter(user=request.user.id, is_confirmed=True)
+        serializer = GroupSerializer(group_list, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def post(self, request):
         data = {
             "name": request.data.get("name"),
@@ -18,7 +24,8 @@ class NewGroupView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class GroupView(APIView):
+
+class GroupInviteView(APIView):
     def post(self, request):
         data = {
             "name": get_object_or_404(Group, user=request.user.id).name,
