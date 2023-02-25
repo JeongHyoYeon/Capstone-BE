@@ -12,3 +12,4 @@ DATABASES = {
         'PORT': env('DATABASE_PORT'),
     }
 }
+
