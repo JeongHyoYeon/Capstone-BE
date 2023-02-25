@@ -3,7 +3,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from ..serializers import *
-from .group_views import GroupView
 import boto3
 import uuid
 from tripfriend.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME
@@ -30,7 +29,7 @@ class MyS3Client:
                     ExtraArgs=extra_args
                 )
             return f'https://{self.bucket_name}.s3.ap-northeast-2.amazonaws.com/{file_id}'
-        except:
+        except file:
             return None
 
 
@@ -42,14 +41,26 @@ class PersonalTripView(APIView):
 
 
 class GroupTripView(APIView):
-    def get(self, request):
-        group_list = GroupView.get()
-        trip_list = Trip.objects.filter(group__in=group_list)
+    def get(self, request, group):
+        trip_list = Trip.objects.filter(group=group)
         serializer = TripSerializer(trip_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
         s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
+        data = {
+            "group": request.data.get("group"),
+            "place": request.data.get("place"),
+            "departing_date": request.data.get("departing_date"),
+            "arriving_date": request.data.get("arriving_date"),
+            "thumbnail": s3_client.upload(request.FILES)
+        }
+        serializer = TripSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
