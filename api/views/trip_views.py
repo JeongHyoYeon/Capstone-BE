@@ -49,12 +49,17 @@ class GroupTripView(APIView):
 
     def post(self, request, group):
         s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
+        try:
+            thumbnail = s3_client.upload(request.FILES['thumbnail'])
+        except Exception as e:
+            print(e)
+            thumbnail = None
         data = {
             "group": group,
             "place": request.data.get("place"),
             "departing_date": request.data.get("departing_date"),
             "arriving_date": request.data.get("arriving_date"),
-            "thumbnail": s3_client.upload(request.FILES['thumbnail'])
+            "thumbnail": thumbnail
         }
         serializer = TripSerializer(data=data)
         if serializer.is_valid():
