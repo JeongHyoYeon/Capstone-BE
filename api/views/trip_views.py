@@ -29,7 +29,7 @@ class MyS3Client:
                     ExtraArgs=extra_args
                 )
             return f'https://{self.bucket_name}.s3.ap-northeast-2.amazonaws.com/{file_id}'
-        except file:
+        except:
             return None
 
 
@@ -46,10 +46,10 @@ class GroupTripView(APIView):
         serializer = TripSerializer(trip_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def post(self, request):
+    def post(self, request, group):
         s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
         data = {
-            "group": request.data.get("group"),
+            "group": group,
             "place": request.data.get("place"),
             "departing_date": request.data.get("departing_date"),
             "arriving_date": request.data.get("arriving_date"),
