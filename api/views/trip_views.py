@@ -29,7 +29,8 @@ class MyS3Client:
                     ExtraArgs=extra_args
                 )
             return f'https://{self.bucket_name}.s3.ap-northeast-2.amazonaws.com/{file_id}'
-        except:
+        except Exception as e:
+            print(e)
             return None
 
 
@@ -53,7 +54,7 @@ class GroupTripView(APIView):
             "place": request.data.get("place"),
             "departing_date": request.data.get("departing_date"),
             "arriving_date": request.data.get("arriving_date"),
-            "thumbnail": s3_client.upload(request.FILES)
+            "thumbnail": s3_client.upload(request.FILES['thumbnail'])
         }
         serializer = TripSerializer(data=data)
         if serializer.is_valid():
