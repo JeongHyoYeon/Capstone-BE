@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.views import TokenRefreshView
 from django.urls import path
-from .views import login_views, group_views, trip_views
+from .views import login_views, group_views, trip_views, expense_views
 
 urlpatterns = [
     # 로그인 api
@@ -14,5 +14,7 @@ urlpatterns = [
     path('group/invite/', group_views.GroupInviteView.as_view()),
     # 여행 api
     path('trip/user/', trip_views.PersonalTripView.as_view()),
-    path('trip/<int:group>/', trip_views.GroupTripView.as_view())
+    path('trip/<int:group>/', trip_views.GroupTripView.as_view()),
+    # 비용 api
+    path('expense/<int:trip>/', expense_views.ExpenseView.as_view()),
 ]

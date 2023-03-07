@@ -89,6 +89,7 @@ class Trip(models.Model):
 
 class Expense(models.Model):
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE)
+    expense_num = models.IntegerField()  # participant 때문에 여러 번 저장하게 되는데 어떤게 같은 결제 내역인지 구분용
     payer = models.ForeignKey(User, related_name='payer', on_delete=models.CASCADE)
     participant = models.ForeignKey(User, related_name='participant', on_delete=models.CASCADE)
     payment = models.IntegerField()
