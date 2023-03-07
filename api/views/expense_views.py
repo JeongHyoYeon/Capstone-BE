@@ -8,6 +8,11 @@ from datetime import datetime
 
 
 class ExpenseView(APIView):
+    def get(self, request, trip):
+        expense_list = Expense.objects.filter(trip=trip)
+        serializer = ExpenseSerializer(expense_list, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def post(self, request, trip):
         try:
             expense_num = Expense.objects.latest('expense_num').expense_num + 1
