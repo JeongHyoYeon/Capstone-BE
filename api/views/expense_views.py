@@ -48,13 +48,18 @@ class ExpenseView(APIView):
         print(response)
         return Response(response)
 
+    def patch(self, request):
+        expense_instance = get_object_or_404(Expense, id=request.data['id'])
+        serializer = ExpenseSerializer(instance=expense_instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ExpenseCategoryView(APIView):
     def get(self, request, trip, category):
         expense_list = Expense.objects.filter(trip=trip, category=category)
         serializer = ExpenseSerializer(expense_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-
-
+    
