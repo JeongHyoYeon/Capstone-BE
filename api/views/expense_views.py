@@ -49,3 +49,12 @@ class ExpenseView(APIView):
         return Response(response)
 
 
+class ExpenseCategoryView(APIView):
+    def get(self, request, trip, category):
+        expense_list = Expense.objects.filter(trip=trip, category=category)
+        serializer = ExpenseSerializer(expense_list, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+

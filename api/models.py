@@ -88,12 +88,22 @@ class Trip(models.Model):
 
 
 class Expense(models.Model):
+    CATEGORY_CHOICES = {
+        ('room', '숙소'),
+        ('airline', '항공'),
+        ('traffic', '교통'),
+        ('food', '식비'),
+        ('shopping', '쇼핑'),
+        ('tourism', '관광'),
+        ('etc', '기타')
+    }
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE)
     expense_num = models.IntegerField()  # participant 때문에 여러 번 저장하게 되는데 어떤게 같은 결제 내역인지 구분용
     payer = models.ForeignKey(User, related_name='payer', on_delete=models.CASCADE)
     participant = models.ForeignKey(User, related_name='participant', on_delete=models.CASCADE)
     payment = models.IntegerField()
     payed_at = models.DateField(null=True)
+    category = models.CharField(max_length=30, choices=CATEGORY_CHOICES, null=True)
 
 
 class Photo(models.Model):
