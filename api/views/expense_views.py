@@ -62,4 +62,8 @@ class ExpenseCategoryView(APIView):
         expense_list = Expense.objects.filter(trip=trip, category=category)
         serializer = ExpenseSerializer(expense_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
+
+class ExpenseDateView(APIView):
+    def get(self, request, trip, day):
+        pass

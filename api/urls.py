@@ -17,5 +17,6 @@ urlpatterns = [
     path('trip/<int:group>/', trip_views.GroupTripView.as_view()),
     # 비용 api
     path('expense/<int:trip>/', expense_views.ExpenseView.as_view()),
-    path('expense/<int:trip>/<str:category>/', expense_views.ExpenseCategoryView.as_view())
+    path('expense-category/<int:trip>/<str:category>/', expense_views.ExpenseCategoryView.as_view()),
+    path('expense-date/<int:trip>/<str:date>/', expense_views.ExpenseCategoryView.as_view())
 ]
