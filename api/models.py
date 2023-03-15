@@ -74,6 +74,7 @@ class User(AbstractBaseUser, BaseModel):
 
 
 class Group(BaseModel):
+    group_num = models.IntegerField()  # 같은 그룹 구분용(id와 별도)
     name = models.CharField(max_length=20)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     is_confirmed = models.BooleanField(default=False)

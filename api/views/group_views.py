@@ -12,7 +12,13 @@ class GroupView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
+        try:
+            group_num = Group.objects.latest('group_num').group_num + 1
+        except Exception as e:
+            print(e)
+            group_num = 1
         data = {
+            "group_num": group_num,
             "name": request.data.get("name"),
             "user": request.user.id,
             "is_confirmed": True
@@ -28,7 +34,8 @@ class GroupView(APIView):
 class GroupInviteView(APIView):
     def post(self, request):
         data = {
-            "name": get_object_or_404(Group, user=request.user.id).name,
+            "group_num": get_object_or_404(Group, id=request.data['id']).group_num,
+            "name": get_object_or_404(Group, id=request.data['id']).name,
             "user": request.data['invited_user'],
             "is_confirmed": False
         }
