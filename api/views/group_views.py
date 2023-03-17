@@ -8,8 +8,22 @@ from ..serializers import *
 class GroupView(APIView):
     def get(self, request):
         group_list = Group.objects.filter(user=request.user.id, is_confirmed=True)
-        serializer = GroupSerializer(group_list, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        data = []
+        for group in group_list:
+            serializer = GroupSerializer(group)
+            user_list = User.objects.filter(group__group_num=group.group_num)
+            user_name_list = []
+            for user in user_list:
+                user_name_list.append(user.name)
+            data.append({
+                "group_info": serializer.data,
+                "user_in_group": user_name_list
+            })
+        response = {
+            "status": status.HTTP_200_OK,
+            "data": data
+        }
+        return Response(response)
 
     def post(self, request):
         try:
