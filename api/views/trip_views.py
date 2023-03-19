@@ -36,16 +36,36 @@ class MyS3Client:
 
 class PersonalTripView(APIView):
     def get(self, request):
-        trip_list = Trip.objects.filter(group__user=request.user.id)
-        serializer = TripSerializer(trip_list, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        group_list = Group.objects.filter(user=request.user.id)
+        trip_list = Trip.objects.filter(group__in=group_list.values_list('group_num'))
+        print(group_list.values_list('group_num'))
+        data = []
+        for trip in trip_list:
+            group_name = Group.objects.filter(group_num=trip.group)[0].name
+            data.append({
+                "group": group_name,
+                "trip_info": TripSerializer(trip).data
+            })
+        response = {
+            "status": status.HTTP_200_OK,
+            "data": data
+        }
+        return Response(response)
 
 
 class GroupTripView(APIView):
     def get(self, request, group):
         trip_list = Trip.objects.filter(group=group)
+        group_name = Group.objects.filter(group_num=group)[0].name
         serializer = TripSerializer(trip_list, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        response = {
+            "status": status.HTTP_200_OK,
+            "data": {
+                "group_name": group_name,
+                "trip_list": serializer.data
+            }
+        }
+        return Response(response)
 
     def post(self, request, group):
         s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
