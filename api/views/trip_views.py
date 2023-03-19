@@ -89,4 +89,12 @@ class GroupTripView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class TripDetailView(APIView):
+    def get(self, request, trip):
+        trip = get_object_or_404(Trip, id=trip)
+        serializer = TripSerializer(trip)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
 
