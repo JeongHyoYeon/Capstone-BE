@@ -26,6 +26,11 @@ class ExpenseSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class PhotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Photo
+        fields = '__all__'
+
 class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:

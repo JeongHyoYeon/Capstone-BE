@@ -38,7 +38,6 @@ class PersonalTripView(APIView):
     def get(self, request):
         group_list = Group.objects.filter(user=request.user.id)
         trip_list = Trip.objects.filter(group__in=group_list.values_list('group_num'))
-        print(group_list.values_list('group_num'))
         data = []
         for trip in trip_list:
             group_name = Group.objects.filter(group_num=trip.group)[0].name
