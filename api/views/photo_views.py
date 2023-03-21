@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -6,6 +8,8 @@ from ..serializers import *
 import boto3
 import uuid
 from tripfriend.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME
+from PIL import Image
+from PIL.ExifTags import TAGS
 
 class MyS3Client:
     def __init__(self, access_key, secret_key, bucket_name):
@@ -34,20 +38,35 @@ class MyS3Client:
             return None
 
 
-class AllPhotoView(APIView):
+class PhotoView(APIView):
     def get(self, request, trip):
         photos = Photo.objects.filter(trip=trip)
         serializer = PhotoSerializer(photos, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, trip):
+        photo = request.FILES['photo']
+        taken_at = None
+        img = Image.open(photo)
+        img_info = img._getexif()
+        for tag_id in img_info:
+            tag = TAGS.get(tag_id, tag_id)
+            img_data = img_info.get(tag_id)
+            if tag == 'DateTimeOriginal':
+                taken_at = datetime.strptime(img_data, '%Y:%m:%d %H:%M:%S')
+                print(taken_at)
+
         s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
-        photo = s3_client.upload(request.FILES['photo'])
+        url = s3_client.upload(photo)
+
         data = {
             "trip": trip,
-            "url": photo
+            "url": url,
+            "taken_at": taken_at
         }
+
         serializer = PhotoSerializer(data=data)
+        img.close()
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
