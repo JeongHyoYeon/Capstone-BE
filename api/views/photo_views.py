@@ -34,7 +34,12 @@ class MyS3Client:
             return None
 
 
-class PhotoUploadView(APIView):
+class AllPhotoView(APIView):
+    def get(self, request, trip):
+        photos = Photo.objects.filter(trip=trip)
+        serializer = PhotoSerializer(photos, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def post(self, request, trip):
         s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
         photo = s3_client.upload(request.FILES['photo'])
