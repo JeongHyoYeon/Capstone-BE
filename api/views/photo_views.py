@@ -40,9 +40,32 @@ class MyS3Client:
 
 class PhotoView(APIView):
     def get(self, request, trip):
+        #날짜별로 묶어서 리턴
         photos = Photo.objects.filter(trip=trip)
-        serializer = PhotoSerializer(photos, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        dates = []
+        for photo in photos:
+            if photo.taken_at is None:
+                dates.append(None)
+            else:
+                dates.append(photo.taken_at.date())
+
+        data = []
+        for date in set(dates):
+            if date is None:
+                data.append({
+                    "date": None,
+                    "photo": PhotoSerializer(photos.filter(taken_at=None), many=True).data
+                })
+            else:
+                data.append({
+                    "date": date,
+                    "photo": PhotoSerializer(photos.filter(taken_at__day=date.day), many=True).data
+                })
+        response = {
+            "status": status.HTTP_200_OK,
+            "data": data
+        }
+        return Response(response)
 
     def post(self, request, trip):
         photo = request.FILES['photo']
