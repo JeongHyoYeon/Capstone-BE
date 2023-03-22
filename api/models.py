@@ -113,4 +113,5 @@ class Photo(models.Model):
     category_custom = models.CharField(null=True, max_length=20)
     category_cv = models.CharField(default="0", max_length=30)
     taken_at = models.DateTimeField(null=True)
+    uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
