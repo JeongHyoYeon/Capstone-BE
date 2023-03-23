@@ -85,7 +85,8 @@ class PhotoView(APIView):
         data = {
             "trip": trip,
             "url": url,
-            "taken_at": taken_at
+            "taken_at": taken_at,
+            "uploaded_by": request.user.id
         }
 
         serializer = PhotoSerializer(data=data)
