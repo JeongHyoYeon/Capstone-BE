@@ -6,6 +6,7 @@ from ..serializers import *
 import boto3
 import uuid
 from tripfriend.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME
+import json
 
 class MyS3Client:
     def __init__(self, access_key, secret_key, bucket_name):
@@ -75,9 +76,9 @@ class GroupTripView(APIView):
             thumbnail = None
         data = {
             "group": group,
-            "place": request.data.get("place"),
-            "departing_date": request.data.get("departing_date"),
-            "arriving_date": request.data.get("arriving_date"),
+            "place": json.loads(request.data.get("place")),
+            "departing_date": json.loads(request.data.get("departing_date")),
+            "arriving_date": json.loads(request.data.get("arriving_date")),
             "thumbnail": thumbnail
         }
         serializer = TripSerializer(data=data)
