@@ -21,5 +21,6 @@ urlpatterns = [
     # path('expense-category/<int:trip>/<str:category>/', expense_views.ExpenseCategoryView.as_view()),
     # path('expense-date/<int:trip>/<str:date>/', expense_views.ExpenseCategoryView.as_view())
     # 사진 api
-    path('photo/<int:trip>/', photo_views.PhotoView.as_view())
+    path('photo/<int:trip>/', photo_views.PhotoView.as_view()),
+    path('photo-categorized/<int:trip>/<str:category>', photo_views.PhotoCategoryView.as_view())
 ]
