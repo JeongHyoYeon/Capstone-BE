@@ -96,7 +96,18 @@ class PhotoView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class PhotoCategoryView(APIView):
+    def post(self, request, trip):
+        photos = Photo.objects.filter(trip=trip).values_list('id', 'url')
+        trip_object = get_object_or_404(Trip, id=trip)
+        number_of_people = Group.objects.filter(group_num=trip_object.group).count()
+        # 모델 돌리기 (인자로 url 리스트, number_of_people) -> output: 태그 붙은 딕셔너리
+        # output DB에 저장
+        return Response({"사진 자동 분류가 완료되었습니다."}, status.HTTP_200_OK)
+
+
+class PhotoCategoryDetailView(APIView):
     def get(self, request, trip, category):
         if category is 'scene':
             pass  #아직 안한거
