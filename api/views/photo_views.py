@@ -10,6 +10,7 @@ from tripfriend.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_ST
 from PIL import Image
 from PIL.ExifTags import TAGS
 
+
 class MyS3Client:
     def __init__(self, access_key, secret_key, bucket_name):
         boto3_s3 = boto3.client(
@@ -69,14 +70,19 @@ class PhotoView(APIView):
     def post(self, request, trip):
         photo = request.FILES['photo']
         taken_at = None
+
         img = Image.open(photo)
         img_info = img._getexif()
-        for tag_id in img_info:
-            tag = TAGS.get(tag_id, tag_id)
-            img_data = img_info.get(tag_id)
-            if tag == 'DateTimeOriginal':
-                taken_at = datetime.strptime(img_data, '%Y:%m:%d %H:%M:%S')
-                print(taken_at)
+
+        try:
+            for tag_id in img_info:
+                tag = TAGS.get(tag_id, tag_id)
+                img_data = img_info.get(tag_id)
+                if tag == 'DateTimeOriginal':
+                    taken_at = datetime.strptime(img_data, '%Y:%m:%d %H:%M:%S')
+                    print(taken_at)
+        except Exception as e:
+            print(e)
 
         s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
         url = s3_client.upload(photo)
@@ -96,8 +102,21 @@ class PhotoView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class PhotoCategoryView(APIView):
+    def patch(self, request, trip):
+        photos = Photo.objects.filter(trip=trip).values_list('id', 'url')
+        print(photos)
+        trip_object = get_object_or_404(Trip, id=trip)
+        number_of_people = Group.objects.filter(group_num=trip_object.group).count()
+        # 모델 돌리기 (인자로 url 리스트, number_of_people) -> output: 태그 붙은 딕셔너리
+        # output DB에 저장(수정)
+        return Response({"사진 자동 분류가 완료되었습니다."}, status.HTTP_200_OK)
+
+
+class PhotoCategoryDetailView(APIView):
     def get(self, request, trip, category):
+        # Todo: DB에 저장되는 category_cv는 string 형태로 여러개, 그래서 검색할 때 그냥 = 으로 검색하면 안됨 (수정필요)
         if category is 'scene':
             pass  #아직 안한거
         else:
