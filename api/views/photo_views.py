@@ -116,9 +116,27 @@ class PhotoCategoryView(APIView):
 
 class PhotoCategoryDetailView(APIView):
     def get(self, request, trip, category):
-        # Todo: DB에 저장되는 category_cv는 string 형태로 여러개, 그래서 검색할 때 그냥 = 으로 검색하면 안됨 (수정필요)
+        # Todo: DB에 저장되는 category_cv는 string 형태로 여러개, 그래서 검색할 때 그냥 = 으로 검색하면 안됨
         if category is 'scene':
-            pass  #아직 안한거
+            # 풍경 안에 있는 카테고리 리스트 리턴
+            # 다시 선택할 경우 이 api 다시 요청
+            photos = Photo.objects.filter(trip=trip)
+            scene_classes = ['buildings', 'forests', 'glacier', 'mountains', 'sea', 'street']
+            data = []
+            for scene in scene_classes:
+                if scene in photos.values_list('category_cv'):
+                    data.append(
+                        {
+                            "category": scene,
+                            "thumbnail": Photo.objects.filter(trip=trip, category_cv=scene)[0]
+                        }
+                    )
+            response = {
+                "status": status.HTTP_200_OK,
+                "data": data
+            }
+            return Response(response)
+
         else:
             photos = Photo.objects.filter(trip=trip, category_cv=category)
             serializer = PhotoSerializer(photos, many=True)
