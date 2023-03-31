@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.views import TokenRefreshView
 from django.urls import path
-from .views import login_views, group_views, trip_views, expense_views, photo_views
+from .views import login_views, group_views, trip_views, expense_views, photo_views, chatgpt_views
 
 urlpatterns = [
     # 로그인 api
@@ -23,5 +23,7 @@ urlpatterns = [
     # 사진 api
     path('photo/<int:trip>/', photo_views.PhotoView.as_view()),
     path('photo-categorized/<int:trip>/', photo_views.PhotoCategoryView.as_view()),
-    path('photo-categorized/<int:trip>/<str:category>/', photo_views.PhotoCategoryDetailView.as_view())
+    path('photo-categorized/<int:trip>/<str:category>/', photo_views.PhotoCategoryDetailView.as_view()),
+    #chatGPT api
+    path('ask/<int:trip>/', chatgpt_views.FindPhotoView.as_view())
 ]

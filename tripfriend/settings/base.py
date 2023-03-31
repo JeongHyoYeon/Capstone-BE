@@ -167,3 +167,5 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'UPDATE_LAST_LOGIN': True,
 }
+
+OPENAI_KEY = env('OPENAI_KEY')
