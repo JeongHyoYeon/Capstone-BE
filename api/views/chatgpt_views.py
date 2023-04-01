@@ -1,29 +1,39 @@
 import openai
+from rest_framework import status
+from rest_framework.response import Response
 from rest_framework.views import APIView
 from api.models import *
+from api.serializers import PhotoSerializer
 from tripfriend.settings import OPENAI_KEY
+from django.shortcuts import get_object_or_404
 
 
-openai.api_key = OPENAI_KEY
-
-response = openai.Completion.create(
-    # 인자 조정해야
-    model="text-davinci-003",
-    prompt="Hi my name is Jeonghyun Lee",  # 들어갈 내용 구상...
-    temperature=0,  # 0: 매 프롬프트마다 동일한 답변, 1: 매 프롬프트마다 상이한 답변
-    max_tokens=100,
-    top_p=1,
-    frequency_penalty=0.0,
-    presence_penalty=0.0,
-    stop=["\n"]
-)
-
-print(response)  # 원하는 부분 잘라야
-
-
-class FindPhotoView(APIView):
+class PhotoSearchView(APIView):
     def post(self, request, trip):
-        photos = Photo.objects.filter(trip=trip).values_list('id', 'uploaded_by', 'taken_at', 'category_cv')
+        photos = Photo.objects.filter(trip=trip).values('id', 'uploaded_by', 'taken_at', 'category_cv')
         user_input = request.data['user_input']
-        chatGPT_input = "uploaded_by는 찍은 사람을 뜻하고 category_cv는 관련된 요소라고할 때, " + user_input\
-                        + "위에 준 리스트에서 해당되는 항목의 id만 띄어쓰기로 구분해서 알려줘."
+        chatgpt_input = str(photos) + "\nuploaded_by는 찍은 사람을 뜻하고 taken_at은 촬영 시간을 뜻해. " \
+                                      "그리고 category_cv는 관련된 요소라고할 때, " + user_input\
+                        + ". 위에 준 리스트에서 해당되는 항목의 id만 띄어쓰기로 구분해서 알려줘."
+        print(chatgpt_input)
+        openai.api_key = OPENAI_KEY
+        chatgpt_output = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": chatgpt_input}
+            ]
+        )
+        photo_id_list = chatgpt_output['choices'][0]['message']['content'].split()
+
+        data = []
+        for photo_id in photo_id_list:
+            serializer = PhotoSerializer(get_object_or_404(Photo, id=photo_id))
+            data.append(serializer.data)
+
+        response = {
+            "status": status.HTTP_200_OK,
+            "data": data
+        }
+        return Response(response)
+
