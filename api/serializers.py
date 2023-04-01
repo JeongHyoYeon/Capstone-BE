@@ -20,12 +20,6 @@ class TripSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ExpenseSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Expense
-        fields = '__all__'
-
-
 class PhotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Photo
