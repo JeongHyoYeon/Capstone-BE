@@ -1,4 +1,3 @@
-import uuid
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.db import models
 from django.utils.timezone import localdate, localtime
@@ -90,11 +89,11 @@ class Trip(models.Model):
 
 
 class Photo(models.Model):
+    file_key = models.UUIDField(null=True)
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE)
     url = models.TextField()
     category_custom = models.CharField(null=True, max_length=20)
     category_cv = models.CharField(default="0", max_length=30)
     taken_at = models.DateTimeField(null=True)
     uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    file_key = models.UUIDField(default=uuid.uuid4, unique=True)
 
