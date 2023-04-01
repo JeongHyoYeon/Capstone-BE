@@ -68,39 +68,48 @@ class PhotoView(APIView):
         return Response(response)
 
     def post(self, request, trip):
-        photo = request.FILES['photo']
-        taken_at = None
+        photos = request.FILES.getlist('photos')
+        print(photos)
+        result_data = []
+        for photo in photos:
+            taken_at = None
 
-        img = Image.open(photo)
-        img_info = img._getexif()
+            img = Image.open(photo)
+            img_info = img._getexif()
 
-        try:
-            for tag_id in img_info:
-                tag = TAGS.get(tag_id, tag_id)
-                img_data = img_info.get(tag_id)
-                if tag == 'DateTimeOriginal':
-                    taken_at = datetime.strptime(img_data, '%Y:%m:%d %H:%M:%S')
-                    print(taken_at)
-        except Exception as e:
-            print(e)
+            try:
+                for tag_id in img_info:
+                    tag = TAGS.get(tag_id, tag_id)
+                    img_data = img_info.get(tag_id)
+                    if tag == 'DateTimeOriginal':
+                        taken_at = datetime.strptime(img_data, '%Y:%m:%d %H:%M:%S')
+                        print(taken_at)
+            except Exception as e:
+                print(e)
 
-        s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
-        url = s3_client.upload(photo)
+            s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
+            url = s3_client.upload(photo)
 
-        data = {
-            "trip": trip,
-            "url": url,
-            "taken_at": taken_at,
-            "uploaded_by": request.user.id
+            data = {
+                "trip": trip,
+                "url": url,
+                "taken_at": taken_at,
+                "uploaded_by": request.user.id
+            }
+
+            serializer = PhotoSerializer(data=data)
+            img.close()
+            if serializer.is_valid():
+                serializer.save()
+                result_data.append(serializer.data)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        response = {
+            "status": status.HTTP_201_CREATED,
+            "data": result_data
         }
-
-        serializer = PhotoSerializer(data=data)
-        img.close()
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(response)
 
 
 class PhotoCategoryView(APIView):
