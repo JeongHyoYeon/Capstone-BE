@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.views import TokenRefreshView
 from django.urls import path
-from .views import login_views, group_views, trip_views, expense_views, photo_views, chatgpt_views
+from .views import login_views, group_views, trip_views, photo_views, chatgpt_views
 
 urlpatterns = [
     # 로그인 api
@@ -16,10 +16,6 @@ urlpatterns = [
     path('trip/user/', trip_views.PersonalTripView.as_view()),
     path('trip/<int:group>/', trip_views.GroupTripView.as_view()),
     path('trip/detail/<int:trip>/', trip_views.TripDetailView.as_view()),
-    # 비용 api (기능 빠질 가능성 있으므로 일단 건너뛰기)
-    # path('expense/<int:trip>/', expense_views.ExpenseView.as_view()),
-    # path('expense-category/<int:trip>/<str:category>/', expense_views.ExpenseCategoryView.as_view()),
-    # path('expense-date/<int:trip>/<str:date>/', expense_views.ExpenseCategoryView.as_view())
     # 사진 api
     path('photo/<int:trip>/', photo_views.PhotoView.as_view()),
     path('photo-categorized/<int:trip>/', photo_views.PhotoCategoryView.as_view()),
