@@ -89,7 +89,7 @@ class Trip(models.Model):
 
 
 class Photo(models.Model):
-    file_key = models.UUIDField(null=True)
+    file_key = models.UUIDField(primary_key=True)
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE)
     url = models.TextField()
     category_custom = models.CharField(null=True, max_length=20)
