@@ -93,7 +93,8 @@ class Photo(models.Model):
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE)
     url = models.TextField()
     category_custom = models.CharField(null=True, max_length=20)
-    category_cv = models.CharField(default="0", max_length=30)
+    category_yolo = models.CharField(blank=True, max_length=30)
+    category_face = models.CharField(default="0", max_length=30)
     taken_at = models.DateTimeField(null=True)
     uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
