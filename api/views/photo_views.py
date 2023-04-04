@@ -27,15 +27,24 @@ class MyS3Client:
             extra_args = {'ContentType': file.content_type}
 
             self.s3_client.upload_fileobj(
-                    file,
-                    self.bucket_name,
-                    file_id,
+                    file,  # filename
+                    self.bucket_name,  # bucket
+                    file_id,  # key
                     ExtraArgs=extra_args
                 )
-            return f'https://{self.bucket_name}.s3.ap-northeast-2.amazonaws.com/{file_id}'
+            return file_id, f'https://{self.bucket_name}.s3.ap-northeast-2.amazonaws.com/{file_id}'
         except Exception as e:
             print(e)
             return None
+
+
+    def download(self, file):
+        self.s3_client.download_file(
+            self.bucket_name,  # bucket
+            # key
+            # filename
+        )
+
 
 
 class PhotoView(APIView):
@@ -68,6 +77,7 @@ class PhotoView(APIView):
         return Response(response)
 
     def post(self, request, trip):
+        # TODO: 사진 여러장 한번에 업로드, file_key 저장, 메타정보 저장 후 사진 날아가는 문제 해결
         photos = request.FILES.getlist('photos')
         print(photos)
         result_data = []
@@ -88,11 +98,12 @@ class PhotoView(APIView):
                 print(e)
 
             s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
-            url = s3_client.upload(photo)
+            s3_result = s3_client.upload(photo)
 
             data = {
+                "file_key": s3_result[0],
                 "trip": trip,
-                "url": url,
+                "url": s3_result[1],
                 "taken_at": taken_at,
                 "uploaded_by": request.user.id
             }
@@ -150,3 +161,7 @@ class PhotoCategoryDetailView(APIView):
             photos = Photo.objects.filter(trip=trip, category_cv=category)
             serializer = PhotoSerializer(photos, many=True)
             return Response(serializer.data, status.HTTP_200_OK)
+
+
+class PhotoDownloadView(APIView):
+    pass
