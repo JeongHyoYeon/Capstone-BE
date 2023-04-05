@@ -89,7 +89,8 @@ class Trip(models.Model):
 
 
 class Photo(models.Model):
-    file_key = models.UUIDField(primary_key=True)
+    file_index = models.BigAutoField(primary_key=True)  # ChatGPT에게 보내는 용 (외부로 file_key 유츌 안하고 token 길이 줄이기 위해)
+    file_key = models.UUIDField(unique=True)  # 서비스에서 사용할 pk
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE)
     url = models.TextField()
     category_custom = models.CharField(null=True, max_length=20)
