@@ -64,8 +64,13 @@ class GroupInviteView(APIView):
 
     def get(self, request):
         invites = UserGroup.objects.filter(user=request.user.id, is_confirmed=False)
-        serializer = UserGroupSerializer(invites, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        data = []
+        for invite in invites:
+            data.append({
+                "user_group": UserGroupSerializer(invite).data,
+                "group_name": invite.group.name
+            })
+        return Response(data, status=status.HTTP_200_OK)
 
     def patch(self, request):
         user_group_instance = get_object_or_404(UserGroup, id=request.data['user_group_id'])
