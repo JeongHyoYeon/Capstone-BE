@@ -10,9 +10,11 @@ from django.shortcuts import get_object_or_404
 
 class PhotoSearchView(APIView):
     def post(self, request, trip):
-        photos = Photo.objects.filter(trip=trip).values('id', 'uploaded_by', 'taken_at', 'category_cv')
+        photos = Photo.objects.filter(trip=trip).values('file_index', 'uploaded_by__name',
+                                                        'taken_at', 'category_yolo', 'category_face')
+        print(photos)
         user_input = request.data['user_input']
-        chatgpt_input = str(photos) + "\nuploaded_by는 찍은 사람을 뜻하고 taken_at은 촬영 시간을 뜻해. " \
+        chatgpt_input = str(photos) + "\nuploaded_by__name는 찍은 사람을 뜻하고 taken_at은 촬영 시간을 뜻해. " \
                                       "그리고 category_cv는 관련된 요소라고할 때, " + user_input\
                         + ". 위에 준 리스트에서 해당되는 항목의 id만 띄어쓰기로 구분해서 알려줘."
         print(chatgpt_input)
@@ -28,7 +30,7 @@ class PhotoSearchView(APIView):
 
         data = []
         for photo_id in photo_id_list:
-            serializer = PhotoSerializer(get_object_or_404(Photo, id=photo_id))
+            serializer = PhotoSerializer(get_object_or_404(Photo, file_index=photo_id))
             data.append(serializer.data)
 
         response = {

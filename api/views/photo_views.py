@@ -41,8 +41,8 @@ class MyS3Client:
     def download(self, file):
         self.s3_client.download_file(
             self.bucket_name,  # bucket
-            # key
-            # filename
+            file.file_key,  # key
+            file.file_key  # filename
         )
 
 
@@ -77,7 +77,7 @@ class PhotoView(APIView):
         return Response(response)
 
     def post(self, request, trip):
-        # TODO: 사진 여러장 한번에 업로드, file_key 저장, 메타정보 저장 후 사진 날아가는 문제 해결
+        # TODO:메타정보 저장 후 사진 날아가는 문제 해결
         photos = request.FILES.getlist('photos')
         print(photos)
         result_data = []
@@ -98,6 +98,7 @@ class PhotoView(APIView):
                 print(e)
 
             s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
+            img.seek(0)
             s3_result = s3_client.upload(photo)
 
             data = {
@@ -137,6 +138,7 @@ class PhotoCategoryView(APIView):
 class PhotoCategoryDetailView(APIView):
     def get(self, request, trip, category):
         # Todo: DB에 저장되는 category_cv는 string 형태로 여러개, 그래서 검색할 때 그냥 = 으로 검색하면 안됨
+        # Todo 2: category_cv -> category_yolo, category_face로 나눈 것 반영해야
         if category is 'scene':
             # 풍경 안에 있는 카테고리 리스트 리턴
             # 다시 선택할 경우 이 api 다시 요청
@@ -144,11 +146,11 @@ class PhotoCategoryDetailView(APIView):
             scene_classes = ['buildings', 'forests', 'glacier', 'mountains', 'sea', 'street']
             data = []
             for scene in scene_classes:
-                if scene in photos.values_list('category_cv'):
+                if scene in photos.values_list('category_yolo'):
                     data.append(
                         {
                             "category": scene,
-                            "thumbnail": Photo.objects.filter(trip=trip, category_cv=scene)[0]
+                            "thumbnail": Photo.objects.filter(trip=trip, category_yolo=scene)[0]
                         }
                     )
             response = {
@@ -158,10 +160,14 @@ class PhotoCategoryDetailView(APIView):
             return Response(response)
 
         else:
-            photos = Photo.objects.filter(trip=trip, category_cv=category)
+            photos = Photo.objects.filter(trip=trip, category_yolo=category)
             serializer = PhotoSerializer(photos, many=True)
             return Response(serializer.data, status.HTTP_200_OK)
 
-
-class PhotoDownloadView(APIView):
-    pass
+    def post(self, request, trip, category):
+        # 파일 다운로드
+        #photos = Photo.objects.filter(trip=trip, category_yolo=category)
+        photos = Photo.objects.filter(trip=trip)
+        for photo in photos:
+            MyS3Client.download(photo)
+        return Response({"다운로드가 완료되었습니다."}, status.HTTP_200_OK)
