@@ -15,8 +15,8 @@ class PhotoSearchView(APIView):
         print(photos)
         user_input = request.data['user_input']
         chatgpt_input = str(photos) + "\nuploaded_by__name는 찍은 사람을 뜻하고 taken_at은 촬영 시간을 뜻해. " \
-                                      "그리고 category_cv는 관련된 요소라고할 때, " + user_input\
-                        + ". 위에 준 리스트에서 해당되는 항목의 id만 띄어쓰기로 구분해서 알려줘."
+                                      "그리고 category_yolo는 관련된 요소라고할 때, " + user_input\
+                        + ". 위에 준 리스트에서 해당되는 항목의 file_index만 띄어쓰기로 구분해서 알려줘."
         print(chatgpt_input)
         openai.api_key = OPENAI_KEY
         chatgpt_output = openai.ChatCompletion.create(
