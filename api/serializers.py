@@ -14,6 +14,12 @@ class GroupSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class UserGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserGroup
+        fields = '__all__'
+
+
 class TripSerializer(serializers.ModelSerializer):
     class Meta:
         model = Trip
