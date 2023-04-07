@@ -51,12 +51,11 @@ class GroupView(APIView):
 class GroupInviteView(APIView):
     def post(self, request):
         data = {
-            "group_num": get_object_or_404(Group, id=request.data['id']).group_num,
-            "name": get_object_or_404(Group, id=request.data['id']).name,
-            "user": request.data['invited_user'],
+            "group": request.data['group'],
+            "user": request.data['user'],
             "is_confirmed": False
         }
-        serializer = GroupSerializer(data=data)
+        serializer = UserGroupSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -64,13 +63,13 @@ class GroupInviteView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
-        invites = Group.objects.filter(user=request.user.id, is_confirmed=False)
-        serializer = GroupSerializer(invites, many=True)
+        invites = UserGroup.objects.filter(user=request.user.id, is_confirmed=False)
+        serializer = UserGroupSerializer(invites, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def patch(self, request):
-        group_instance = get_object_or_404(Group, id=request.data['group_id'])
-        serializer = GroupSerializer(instance=group_instance, data={"is_confirmed": True}, partial=True)
+        user_group_instance = get_object_or_404(UserGroup, id=request.data['user_group_id'])
+        serializer = UserGroupSerializer(instance=user_group_instance, data={"is_confirmed": True}, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
