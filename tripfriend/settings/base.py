@@ -67,7 +67,7 @@ CORS_ORIGIN_WHITELIST = (
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "https://d2caf2t0hjckii.cloudfront.net",
-    "https://app.aftertrip.link"
+    "https://aftertrip.link"
 )
 
 CORS_ALLOW_CREDENTIALS = True
