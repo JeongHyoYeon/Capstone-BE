@@ -56,12 +56,11 @@ class PersonalTripView(APIView):
 class GroupTripView(APIView):
     def get(self, request, group):
         trip_list = Trip.objects.filter(group=group)
-        group_name = Group.objects.filter(group_num=group)[0].name
         serializer = TripSerializer(trip_list, many=True)
         response = {
             "status": status.HTTP_200_OK,
             "data": {
-                "group_name": group_name,
+                "group_name": get_object_or_404(Group, id=group).name,
                 "trip_list": serializer.data
             }
         }
