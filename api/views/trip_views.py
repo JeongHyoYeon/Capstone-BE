@@ -37,13 +37,12 @@ class MyS3Client:
 
 class PersonalTripView(APIView):
     def get(self, request):
-        group_list = Group.objects.filter(user=request.user.id)
-        trip_list = Trip.objects.filter(group__in=group_list.values_list('group_num'))
+        group_list = Group.objects.filter(usergroup__user_id=request.user.id, usergroup__is_confirmed=True)
+        trip_list = Trip.objects.filter(group__in=group_list)
         data = []
         for trip in trip_list:
-            group_name = Group.objects.filter(group_num=trip.group)[0].name
             data.append({
-                "group": group_name,
+                "group": get_object_or_404(Group, id=trip.group).name,
                 "trip_info": TripSerializer(trip).data
             })
         response = {
