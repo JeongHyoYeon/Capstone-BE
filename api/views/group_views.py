@@ -30,8 +30,12 @@ class GroupView(APIView):
             "name": request.data.get("name")
         }
         serializer1 = GroupSerializer(data=data1)
+        data = []
         if serializer1.is_valid():
             group = serializer1.save()
+            data.append({
+                "group": serializer1.data
+            })
             data2 = {
                 "user": request.user.id,
                 "group": group.id,
@@ -40,8 +44,10 @@ class GroupView(APIView):
             serializer2 = UserGroupSerializer(data=data2)
             if serializer2.is_valid():
                 serializer2.save()
-                serializer_data = [serializer1.data, serializer2.data]
-                return Response(serializer_data, status=status.HTTP_201_CREATED)
+                data.append({
+                    "user_group": serializer2.data
+                })
+                return Response(data, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer2.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
