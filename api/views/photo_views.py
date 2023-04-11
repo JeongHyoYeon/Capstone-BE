@@ -84,8 +84,7 @@ class PhotoView(APIView):
         print(photos)
         result_data = []
         for photo in photos:
-            # taken_at = photo['lastModifiedDate']
-            taken_at = None
+            taken_at = photo['lastModifiedDate']
 
             # img = Image.open(photo)
             # img_info = img._getexif()
@@ -110,6 +109,7 @@ class PhotoView(APIView):
                 "url": s3_result[1],
                 "taken_at": taken_at,
                 "uploaded_by": request.user.id
+
             }
 
             serializer = PhotoSerializer(data=data)
