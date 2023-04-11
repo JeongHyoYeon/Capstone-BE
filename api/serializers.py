@@ -26,10 +26,24 @@ class TripSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class TagYoloSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TagYolo
+        fields = '__all__'
+
+
+class TagFaceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TagFace
+        fields = '__all__'
+
 class PhotoSerializer(serializers.ModelSerializer):
+    category_yolo = TagYoloSerializer(read_only=True, many=True)
+    category_face = TagFaceSerializer(read_only=True, many=True)
     class Meta:
         model = Photo
         fields = '__all__'
+
 
 class RegisterSerializer(serializers.ModelSerializer):
 
