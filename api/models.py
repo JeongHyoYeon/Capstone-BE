@@ -6,14 +6,10 @@ from django.utils.timezone import localdate, localtime
 class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    deleted_at = models.DateTimeField(null=True, default=None)
 
     class Meta:
         abstract = True
 
-    def delete(self, using=None, keep_parents=False):
-        self.deleted_at = localtime
-        self.save(update_fields=['deleted_at'])
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -83,7 +79,7 @@ class UserGroup(BaseModel):
     is_confirmed = models.BooleanField(default=False)
 
 
-class Trip(models.Model):
+class Trip(BaseModel):
     group = models.IntegerField()  # group id 아니고 group_num
     place = models.CharField(max_length=50)
     departing_date = models.DateField(default=localdate)
@@ -91,14 +87,22 @@ class Trip(models.Model):
     thumbnail = models.TextField(null=True)
 
 
-class Photo(models.Model):
+class Photo(BaseModel):
     file_index = models.BigAutoField(primary_key=True)  # ChatGPT에게 보내기 위해 uuid와 별도 사용 (외부 유출, token 줄이기 위해)
     file_key = models.UUIDField(unique=True)
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE)
     url = models.TextField()
     category_custom = models.CharField(null=True, max_length=20)
-    category_yolo = models.CharField(blank=True, max_length=30)
-    category_face = models.CharField(default="0", max_length=30)
+    category_yolo = models.ManyToManyField('TagYolo', related_name='photos')
+    category_face = models.ManyToManyField('TagFace', related_name='photos')
     taken_at = models.DateTimeField(null=True)
     uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+
+
+class TagYolo(models.Model):
+    tag_name = models.CharField(max_length=20)
+
+
+class TagFace(models.Model):
+    tag_num = models.IntegerField()
 
