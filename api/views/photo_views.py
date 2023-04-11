@@ -140,7 +140,7 @@ class PhotoCategoryDetailView(APIView):
     def get(self, request, trip, category):
         # Todo: DB에 저장되는 category_cv는 string 형태로 여러개, 그래서 검색할 때 그냥 = 으로 검색하면 안됨
         # Todo 2: category_cv -> category_yolo, category_face로 나눈 것 반영해야
-        if category is 'scene':
+        if category=='scene':
             # 풍경 안에 있는 카테고리 리스트 리턴
             # 다시 선택할 경우 이 api 다시 요청
             photos = Photo.objects.filter(trip=trip)
