@@ -78,7 +78,7 @@ class PhotoView(APIView):
 
     def post(self, request, trip):
         # TODO:메타정보 저장 후 사진 날아가는 문제 해결
-        photos = request.FILES.getlist('photos')
+        photos = request.FILES.getlist('input-file')
         print(photos)
         result_data = []
         for photo in photos:
