@@ -41,8 +41,8 @@ class MyS3Client:
     def download(self, file):
         self.s3_client.download_file(
             self.bucket_name,  # bucket
-            file.file_key,  # key
-            file.file_key  # filename
+            str(file.file_key),  # key
+            str(file.file_key)  # filename
         )
 
 
@@ -79,6 +79,7 @@ class PhotoView(APIView):
     def post(self, request, trip):
         photos = request.FILES.getlist('photos')
         result_data = []
+        s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
         for photo in photos:
             taken_at = None
 
@@ -96,8 +97,6 @@ class PhotoView(APIView):
                 print(e)
 
             photo.open()
-
-            s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
             s3_result = s3_client.upload(photo)
 
             data = {
@@ -136,7 +135,7 @@ class PhotoTagView(APIView):
 
 class PhotoTagDetailView(APIView):
     def get(self, request, trip, tag):
-        # Todo: tag 정보 검색 수정해야
+        # Todo: tag 정보 검색 수정해야 - Yolo 부분 확정되면 고칠 예정
         if tag == 'scene':
             # 풍경 안에 있는 카테고리 리스트 리턴
             # 다시 선택할 경우 이 api 다시 요청
@@ -144,11 +143,11 @@ class PhotoTagDetailView(APIView):
             scene_classes = ['buildings', 'forests', 'glacier', 'mountains', 'sea', 'street']
             data = []
             for scene in scene_classes:
-                if scene in photos.values_list('tag_yolo'):
+                if scene in photos.values_list('tag_yolo__tag_name'):
                     data.append(
                         {
                             "tag": scene,
-                            "thumbnail": Photo.objects.filter(trip=trip, tag_yolo=scene)[0]
+                            "thumbnail": Photo.objects.filter(trip=trip, tag_yolo__tag_name=scene)[0]
                         }
                     )
             response = {
@@ -158,13 +157,18 @@ class PhotoTagDetailView(APIView):
             return Response(response)
 
         else:
-            photos = Photo.objects.filter(trip=trip, tag_yolo=tag)
+            photos = Photo.objects.filter(trip=trip, tag_yolo__tag_name=tag)
             serializer = PhotoReturnSerializer(photos, many=True)
             return Response(serializer.data, status.HTTP_200_OK)
 
     def post(self, request, trip, tag):
         # 파일 다운로드
-        photos = Photo.objects.filter(trip=trip)
+        # trip_photos = Photo.objects.filter(trip=trip)
+        # tag_yolo_list = trip_photos.values_list('tag_yolo__tag_name', flat=True)
+        # # tag_face_list = trip_photos.values_list('tag_face__tag_num', flat=True)
+        # photos = trip_photos.filter(tag__in=tag_yolo_list)
+        photos = Photo.objects.filter(trip=trip)  # 다운로드 테스트용
+        s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
         for photo in photos:
-            MyS3Client.download(photo)
+            s3_client.download(photo)
         return Response({"다운로드가 완료되었습니다."}, status.HTTP_200_OK)
