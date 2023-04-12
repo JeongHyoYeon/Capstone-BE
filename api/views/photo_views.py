@@ -63,12 +63,12 @@ class PhotoView(APIView):
             if date is None:
                 data.append({
                     "date": None,
-                    "photo": PhotoSerializer(photos.filter(taken_at=None), many=True).data
+                    "photo": PhotoReturnSerializer(photos.filter(taken_at=None), many=True).data
                 })
             else:
                 data.append({
                     "date": date,
-                    "photo": PhotoSerializer(photos.filter(taken_at__day=date.day), many=True).data
+                    "photo": PhotoReturnSerializer(photos.filter(taken_at__day=date.day), many=True).data
                 })
         response = {
             "status": status.HTTP_200_OK,
@@ -110,7 +110,7 @@ class PhotoView(APIView):
 
             }
 
-            serializer = PhotoSerializer(data=data)
+            serializer = PhotoUploadSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
                 result_data.append(serializer.data)
@@ -161,7 +161,7 @@ class PhotoCategoryDetailView(APIView):
 
         else:
             photos = Photo.objects.filter(trip=trip, tag_yolo=category)
-            serializer = PhotoSerializer(photos, many=True)
+            serializer = PhotoReturnSerializer(photos, many=True)
             return Response(serializer.data, status.HTTP_200_OK)
 
     def post(self, request, trip, category):

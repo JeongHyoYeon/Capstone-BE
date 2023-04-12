@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from api.models import *
-from api.serializers import PhotoSerializer
+from api.serializers import PhotoReturnSerializer
 from tripfriend.settings import OPENAI_KEY
 from django.shortcuts import get_object_or_404
 
@@ -30,7 +30,7 @@ class PhotoSearchView(APIView):
 
         data = []
         for photo_id in photo_id_list:
-            serializer = PhotoSerializer(get_object_or_404(Photo, file_index=photo_id))
+            serializer = PhotoReturnSerializer(get_object_or_404(Photo, file_index=photo_id))
             data.append(serializer.data)
 
         response = {
