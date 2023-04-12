@@ -18,8 +18,8 @@ urlpatterns = [
     path('trip/detail/<int:trip>/', trip_views.TripDetailView.as_view()),
     # 사진 api
     path('photo/<int:trip>/', photo_views.PhotoView.as_view()),
-    path('photo-categorized/<int:trip>/', photo_views.PhotoCategoryView.as_view()),
-    path('photo-categorized/<int:trip>/<str:category>/', photo_views.PhotoCategoryDetailView.as_view()),
+    path('photo-tag/<int:trip>/', photo_views.PhotoTagView.as_view()),
+    path('photo-tag/<int:trip>/<str:tag>/', photo_views.PhotoTagDetailView.as_view()),
     #chatGPT api
     path('photo-search/<int:trip>/', chatgpt_views.PhotoSearchView.as_view())
 ]

@@ -77,7 +77,6 @@ class PhotoView(APIView):
         return Response(response)
 
     def post(self, request, trip):
-        # TODO:메타정보 저장 후 사진 날아가는 문제 해결
         photos = request.FILES.getlist('photos')
         result_data = []
         for photo in photos:
@@ -124,7 +123,7 @@ class PhotoView(APIView):
         return Response(response)
 
 
-class PhotoCategoryView(APIView):
+class PhotoTagView(APIView):
     def patch(self, request, trip):
         photos = Photo.objects.filter(trip=trip).values_list('id', 'url')
         print(photos)
@@ -135,11 +134,10 @@ class PhotoCategoryView(APIView):
         return Response({"사진 자동 분류가 완료되었습니다."}, status.HTTP_200_OK)
 
 
-class PhotoCategoryDetailView(APIView):
-    def get(self, request, trip, category):
-        # Todo: DB에 저장되는 category_cv는 string 형태로 여러개, 그래서 검색할 때 그냥 = 으로 검색하면 안됨
-        # Todo 2: category_cv -> category_yolo, category_face로 나눈 것 반영해야
-        if category == 'scene':
+class PhotoTagDetailView(APIView):
+    def get(self, request, trip, tag):
+        # Todo: tag 정보 검색 수정해야
+        if tag == 'scene':
             # 풍경 안에 있는 카테고리 리스트 리턴
             # 다시 선택할 경우 이 api 다시 요청
             photos = Photo.objects.filter(trip=trip)
@@ -149,7 +147,7 @@ class PhotoCategoryDetailView(APIView):
                 if scene in photos.values_list('tag_yolo'):
                     data.append(
                         {
-                            "category": scene,
+                            "tag": scene,
                             "thumbnail": Photo.objects.filter(trip=trip, tag_yolo=scene)[0]
                         }
                     )
@@ -160,11 +158,11 @@ class PhotoCategoryDetailView(APIView):
             return Response(response)
 
         else:
-            photos = Photo.objects.filter(trip=trip, tag_yolo=category)
+            photos = Photo.objects.filter(trip=trip, tag_yolo=tag)
             serializer = PhotoReturnSerializer(photos, many=True)
             return Response(serializer.data, status.HTTP_200_OK)
 
-    def post(self, request, trip, category):
+    def post(self, request, trip, tag):
         # 파일 다운로드
         photos = Photo.objects.filter(trip=trip)
         for photo in photos:
