@@ -38,8 +38,8 @@ class TagFaceSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class PhotoSerializer(serializers.ModelSerializer):
-    category_yolo = TagYoloSerializer(read_only=True, many=True)
-    category_face = TagFaceSerializer(read_only=True, many=True)
+    tag_yolo = TagYoloSerializer(read_only=True, many=True)
+    tag_face = TagFaceSerializer(read_only=True, many=True)
     class Meta:
         model = Photo
         fields = '__all__'
