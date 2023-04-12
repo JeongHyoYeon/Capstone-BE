@@ -47,7 +47,7 @@ class PhotoUploadSerializer(serializers.ModelSerializer):
 class PhotoReturnSerializer(serializers.ModelSerializer):
     class Meta:
         model = Photo
-        fields = ['id', 'trip', 'url', 'uploaded_by', 'taken_at']
+        fields = ['id', 'file_name', 'trip', 'url', 'uploaded_by', 'taken_at']
 
 
 class RegisterSerializer(serializers.ModelSerializer):

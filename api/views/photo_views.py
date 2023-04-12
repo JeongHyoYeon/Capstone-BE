@@ -24,15 +24,16 @@ class MyS3Client:
     def upload(self, file):
         try:
             file_id = str(uuid.uuid4())
+            file_name = file.name
             extra_args = {'ContentType': file.content_type}
 
             self.s3_client.upload_fileobj(
-                    file,  # filename
+                    file,
                     self.bucket_name,  # bucket
                     file_id,  # key
                     ExtraArgs=extra_args
                 )
-            return file_id, f'https://{self.bucket_name}.s3.ap-northeast-2.amazonaws.com/{file_id}'
+            return file_id, file_name, f'https://{self.bucket_name}.s3.ap-northeast-2.amazonaws.com/{file_id}
         except Exception as e:
             print(e)
             return None
@@ -42,7 +43,7 @@ class MyS3Client:
         self.s3_client.download_file(
             self.bucket_name,  # bucket
             str(file.file_key),  # key
-            str(file.file_key)  # filename
+            str(file.file_name)  # filename
         )
 
 
@@ -98,11 +99,11 @@ class PhotoView(APIView):
 
             photo.open()
             s3_result = s3_client.upload(photo)
-
             data = {
                 "file_key": s3_result[0],
+                "file_name": s3_result[1],
                 "trip": trip,
-                "url": s3_result[1],
+                "url": s3_result[2],
                 "taken_at": taken_at,
                 "uploaded_by": request.user.id
 

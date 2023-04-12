@@ -89,6 +89,7 @@ class Trip(BaseModel):
 
 class Photo(BaseModel):
     file_key = models.UUIDField(unique=True)
+    file_name = models.CharField(blank=True, max_length=255)
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE)
     url = models.TextField()
     tag_custom = models.CharField(blank=True, max_length=20)
