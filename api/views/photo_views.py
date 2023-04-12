@@ -95,7 +95,7 @@ class PhotoView(APIView):
                         print(taken_at)
             except Exception as e:
                 print(e)
-                
+
             photo.open()
 
             s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
@@ -146,11 +146,11 @@ class PhotoCategoryDetailView(APIView):
             scene_classes = ['buildings', 'forests', 'glacier', 'mountains', 'sea', 'street']
             data = []
             for scene in scene_classes:
-                if scene in photos.values_list('category_yolo'):
+                if scene in photos.values_list('tag_yolo'):
                     data.append(
                         {
                             "category": scene,
-                            "thumbnail": Photo.objects.filter(trip=trip, category_yolo=scene)[0]
+                            "thumbnail": Photo.objects.filter(trip=trip, tag_yolo=scene)[0]
                         }
                     )
             response = {
@@ -160,13 +160,12 @@ class PhotoCategoryDetailView(APIView):
             return Response(response)
 
         else:
-            photos = Photo.objects.filter(trip=trip, category_yolo=category)
+            photos = Photo.objects.filter(trip=trip, tag_yolo=category)
             serializer = PhotoSerializer(photos, many=True)
             return Response(serializer.data, status.HTTP_200_OK)
 
     def post(self, request, trip, category):
         # 파일 다운로드
-        #photos = Photo.objects.filter(trip=trip, category_yolo=category)
         photos = Photo.objects.filter(trip=trip)
         for photo in photos:
             MyS3Client.download(photo)

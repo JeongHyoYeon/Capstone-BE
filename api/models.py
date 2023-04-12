@@ -92,9 +92,9 @@ class Photo(BaseModel):
     file_key = models.UUIDField(unique=True)
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE)
     url = models.TextField()
-    category_custom = models.CharField(null=True, max_length=20)
-    category_yolo = models.ManyToManyField('TagYolo', related_name='photos')
-    category_face = models.ManyToManyField('TagFace', related_name='photos')
+    tag_custom = models.CharField(null=True, max_length=20)
+    tag_yolo = models.ManyToManyField('TagYolo', related_name='photos')
+    tag_face = models.ManyToManyField('TagFace', related_name='photos')
     taken_at = models.DateTimeField(null=True)
     uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
