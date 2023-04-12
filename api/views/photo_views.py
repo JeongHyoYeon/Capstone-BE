@@ -33,7 +33,7 @@ class MyS3Client:
                     file_id,  # key
                     ExtraArgs=extra_args
                 )
-            return file_id, file_name, f'https://{self.bucket_name}.s3.ap-northeast-2.amazonaws.com/{file_id}
+            return file_id, file_name, f'https://{self.bucket_name}.s3.ap-northeast-2.amazonaws.com/{file_id}'
         except Exception as e:
             print(e)
             return None
@@ -43,7 +43,7 @@ class MyS3Client:
         self.s3_client.download_file(
             self.bucket_name,  # bucket
             str(file.file_key),  # key
-            str(file.file_name)  # filename
+            file.file_name  # filename
         )
 
 
