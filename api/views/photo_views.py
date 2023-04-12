@@ -4,53 +4,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from ..serializers import *
-import boto3
-import uuid
+from api.mys3client import MyS3Client
 from tripfriend.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME
 from PIL import Image
 from PIL.ExifTags import TAGS
-
-
-class MyS3Client:
-    def __init__(self, access_key, secret_key, bucket_name):
-        boto3_s3 = boto3.client(
-            's3',
-            aws_access_key_id=access_key,
-            aws_secret_access_key=secret_key
-        )
-        self.s3_client = boto3_s3
-        self.bucket_name = bucket_name
-
-    def upload(self, file):
-        try:
-            file_id = str(uuid.uuid4())
-            file_name = file.name
-            extra_args = {'ContentType': file.content_type}
-
-            self.s3_client.upload_fileobj(
-                    file,
-                    self.bucket_name,  # bucket
-                    file_id,  # key
-                    ExtraArgs=extra_args
-                )
-            return file_id, file_name, f'https://{self.bucket_name}.s3.ap-northeast-2.amazonaws.com/{file_id}'
-        except Exception as e:
-            print(e)
-            return None
-
-    def download(self, file):
-        # s3_resource = boto3.resource('s3')
-        # object = s3_resource.Object(self.bucket_name, str(file.file_key))
-        # metadata = object.metadata
-        # save_file = file.file_name + metadata['ContentType']
-        # TODO: 파일 확장자 메타데이터 받아올 수 있으면 수정하기, 다운로드 경로 수정
-        save_file = file.file_name + ".jpeg"
-        self.s3_client.download_file(
-            self.bucket_name,  # bucket
-            str(file.file_key),  # key
-            save_file  # filename
-        )
-
 
 
 class PhotoView(APIView):
@@ -103,12 +60,13 @@ class PhotoView(APIView):
                 print(e)
 
             photo.open()
+            file_name = photo.name
             s3_result = s3_client.upload(photo)
             data = {
                 "file_key": s3_result[0],
-                "file_name": s3_result[1],
+                "file_name": file_name,
                 "trip": trip,
-                "url": s3_result[2],
+                "url": s3_result[1],
                 "taken_at": taken_at,
                 "uploaded_by": request.user.id
 
