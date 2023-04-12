@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.views import TokenRefreshView
 from django.urls import path
-from .views import login_views, group_views, trip_views, photo_views, chatgpt_views
+from .views import login_views, group_views, trip_views, photo_views, photo_tag_views, chatgpt_views
 
 urlpatterns = [
     # 로그인 api
@@ -18,8 +18,8 @@ urlpatterns = [
     path('trip/detail/<int:trip>/', trip_views.TripDetailView.as_view()),
     # 사진 api
     path('photo/<int:trip>/', photo_views.PhotoView.as_view()),
-    path('photo-tag/<int:trip>/', photo_views.PhotoTagView.as_view()),
-    path('photo-tag/<int:trip>/<str:tag>/', photo_views.PhotoTagDetailView.as_view()),
-    #chatGPT api
+    path('photo-tag/<str:part>/<int:trip>/', photo_tag_views.PhotoTagView.as_view()),  # part는 yolo 또는 face
+    path('photo-tag/<str:part>/<int:trip>/<int:tag>/', photo_tag_views.PhotoTagDetailView.as_view()),  # part는 yolo 또는 face
+    # chatGPT api
     path('photo-search/<int:trip>/', chatgpt_views.PhotoSearchView.as_view())
 ]
