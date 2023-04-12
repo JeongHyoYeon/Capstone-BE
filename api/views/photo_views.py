@@ -83,21 +83,22 @@ class PhotoView(APIView):
         for photo in photos:
             taken_at = None
 
-            # img = Image.open(photo)
-            # img_info = img._getexif()
-            #
-            # try:
-            #     for tag_id in img_info:
-            #         tag = TAGS.get(tag_id, tag_id)
-            #         img_data = img_info.get(tag_id)
-            #         if tag == 'DateTimeOriginal':
-            #             taken_at = datetime.strptime(img_data, '%Y:%m:%d %H:%M:%S')
-            #             print(taken_at)
-            # except Exception as e:
-            #     print(e)
+            img = Image.open(photo)
+            img_info = img._getexif()
+
+            try:
+                for tag_id in img_info:
+                    tag = TAGS.get(tag_id, tag_id)
+                    img_data = img_info.get(tag_id)
+                    if tag == 'DateTimeOriginal':
+                        taken_at = datetime.strptime(img_data, '%Y:%m:%d %H:%M:%S')
+                        print(taken_at)
+            except Exception as e:
+                print(e)
+                
+            photo.open()
 
             s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
-            # img.seek(0)
             s3_result = s3_client.upload(photo)
 
             data = {
@@ -110,7 +111,6 @@ class PhotoView(APIView):
             }
 
             serializer = PhotoSerializer(data=data)
-            # img.close()
             if serializer.is_valid():
                 serializer.save()
                 result_data.append(serializer.data)
