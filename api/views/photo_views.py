@@ -38,12 +38,17 @@ class MyS3Client:
             print(e)
             return None
 
-
     def download(self, file):
+        # s3_resource = boto3.resource('s3')
+        # object = s3_resource.Object(self.bucket_name, str(file.file_key))
+        # metadata = object.metadata
+        # save_file = file.file_name + metadata['ContentType']
+        # TODO: 파일 확장자 메타데이터 받아올 수 있으면 수정하기, 다운로드 경로 수정
+        save_file = file.file_name + ".jpeg"
         self.s3_client.download_file(
             self.bucket_name,  # bucket
             str(file.file_key),  # key
-            file.file_name  # filename
+            save_file  # filename
         )
 
 
