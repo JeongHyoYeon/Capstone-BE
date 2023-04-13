@@ -10,11 +10,28 @@ from tripfriend.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_ST
 
 class PhotoTagView(APIView):
     def get(self, request, part, trip):
-        # TODO: 카테고리 리스트 & 썸네일 리턴
+        # TODO: 썸네일 리턴
+        trip_photos = Photo.objects.filter(trip=trip)
+        data = []
         if part == 'yolo':
-            pass
+            tag_list = trip_photos.values_list('tag_yolo__tag_name')
+            for tag in tag_list:
+                data.append({
+                    "tag": tag,
+                    "thumbnail": None
+                })
         if part == 'face':
-            pass
+            tag_list = trip_photos.values_list('tag_face__tag_num')
+            for tag in tag_list:
+                data.append({
+                    "tag": tag,
+                    "thumbnail": None
+                })
+        response = {
+            "status": status.HTTP_200_OK,
+            "data": data
+        }
+        return Response(response)
 
     def patch(self, request, part, trip):
         photos = Photo.objects.filter(trip=trip).values('id', 'url')
@@ -30,19 +47,17 @@ class PhotoTagDetailView(APIView):
     def get(self, request, part, trip, tag):
         if part == 'yolo':
             photos = Photo.objects.filter(trip=trip, tag_yolo__photos=tag)
-            print(photos)
-            serializer = PhotoReturnSerializer(photos, many=True)
-            return Response(serializer.data, status.HTTP_200_OK)
         if part == 'face':
             photos = Photo.objects.filter(trip=trip, tag_face__photos=tag)
-            serializer = PhotoReturnSerializer(photos, many=True)
-            return Response(serializer.data, status.HTTP_200_OK)
-
+        serializer = PhotoReturnSerializer(photos, many=True)
+        return Response(serializer.data, status.HTTP_200_OK)
 
     def post(self, request, part, trip, tag):
         # 파일 다운로드
-        # TODO: 폴더 안에 있는 사진만 다운로드 받게 수정
-        photos = Photo.objects.filter(trip=trip)  # 다운로드 테스트용
+        if part == 'yolo':
+            photos = Photo.objects.filter(trip=trip, tag_yolo__photos=tag)
+        if part == 'face':
+            photos = Photo.objects.filter(trip=trip, tag_face__photos=tag)
         s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
         for photo in photos:
             s3_client.download(photo)
