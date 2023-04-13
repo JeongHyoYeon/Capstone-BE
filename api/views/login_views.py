@@ -12,7 +12,7 @@ import re
 
 # Create your views here.
 class RegisterView(APIView):
-    permissions_classes = [AllowAny]
+    permission_classes = [AllowAny]
 
     def post(self, request):
         # 비밀번호 유효성 검사
@@ -46,7 +46,7 @@ class RegisterView(APIView):
 
 
 class LoginView(APIView):
-    permissions_classes = [AllowAny]
+    permission_classes = [AllowAny]
 
     def post(self, request):
         user = authenticate(
@@ -76,7 +76,7 @@ class LoginView(APIView):
 
 
 class GoogleLoginView(APIView):
-    permissions_classes = [AllowAny]
+    permission_classes = [AllowAny]
 
     def post(self, request):
         payload = {'access_token': request.data.get('token')}  # validate the token
