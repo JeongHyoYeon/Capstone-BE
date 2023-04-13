@@ -5,12 +5,15 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.hashers import make_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework.permissions import AllowAny
 from ..serializers import *
 import requests
 import re
 
 # Create your views here.
 class RegisterView(APIView):
+    permissions_classes = [AllowAny]
+
     def post(self, request):
         # 비밀번호 유효성 검사
         pw = request.data.get('password')
@@ -43,6 +46,8 @@ class RegisterView(APIView):
 
 
 class LoginView(APIView):
+    permissions_classes = [AllowAny]
+
     def post(self, request):
         user = authenticate(
             id=request.data.get("id"), password=request.data.get("password")
@@ -71,6 +76,8 @@ class LoginView(APIView):
 
 
 class GoogleLoginView(APIView):
+    permissions_classes = [AllowAny]
+
     def post(self, request):
         payload = {'access_token': request.data.get('token')}  # validate the token
         r = requests.get('https://www.googleapis.com/oauth2/v1/userinfo', params=payload)
