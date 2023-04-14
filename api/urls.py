@@ -11,7 +11,8 @@ urlpatterns = [
     path('logout/', login_views.LogoutView.as_view()),
     # 그룹 api
     path('group/', group_views.GroupView.as_view()),
-    path('group/invite/', group_views.GroupInviteView.as_view()),
+    path('group/invite/', group_views.GroupInviteListView.as_view()),
+    path('group/invite/<int:usergroup>/', group_views.GroupInviteView.as_view()),
     # 여행 api
     path('trip/user/', trip_views.PersonalTripView.as_view()),
     path('trip/<int:group>/', trip_views.GroupTripView.as_view()),

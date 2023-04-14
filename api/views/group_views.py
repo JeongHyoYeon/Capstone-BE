@@ -54,7 +54,7 @@ class GroupView(APIView):
             return Response(serializer1.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class GroupInviteView(APIView):
+class GroupInviteListView(APIView):
     def post(self, request):
         data = {
             "group": request.data['group'],
@@ -78,11 +78,18 @@ class GroupInviteView(APIView):
             })
         return Response(data, status=status.HTTP_200_OK)
 
-    def patch(self, request):
-        user_group_instance = get_object_or_404(UserGroup, id=request.data['user_group_id'])
+
+class GroupInviteView(APIView):
+    def patch(self, request, usergroup):
+        user_group_instance = get_object_or_404(UserGroup, id=usergroup)
         serializer = UserGroupSerializer(instance=user_group_instance, data={"is_confirmed": True}, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, usergroup):
+        user_group = UserGroup.objects.filter(id=usergroup)
+        user_group.delete()
+        return Response({"초대가 삭제되었습니다"}, status=status.HTTP_204_NO_CONTENT)
