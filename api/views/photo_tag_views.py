@@ -33,13 +33,12 @@ class PhotoTagView(APIView):
         }
         return Response(response)
 
-    def patch(self, request, part, trip):
+    def post(self, request, part, trip):
         photos = Photo.objects.filter(trip=trip).values('id', 'url')
         print(photos)
-        trip_object = get_object_or_404(Trip, id=trip)
         # 모델 돌리기 (인자로 url 리스트) -> output: 태그 붙은 딕셔너리
         # part 인자로 어떤 모델 돌릴지 구분
-        # output DB에 저장(수정)
+        # output DB에 저장
         return Response({"사진 자동 분류가 완료되었습니다."}, status.HTTP_200_OK)
 
 
