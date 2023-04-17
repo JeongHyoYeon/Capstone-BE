@@ -12,7 +12,7 @@ from PIL.ExifTags import TAGS
 
 class PhotoView(APIView):
     def get(self, request, trip):
-        #날짜별로 묶어서 리턴
+        # 날짜별로 묶어서 리턴
         photos = Photo.objects.filter(trip=trip)
         dates = []
         for photo in photos:
@@ -82,5 +82,23 @@ class PhotoView(APIView):
         response = {
             "status": status.HTTP_201_CREATED,
             "data": result_data
+        }
+        return Response(response)
+
+
+class PhotoUploaderView(APIView):
+    def get(self, request, trip):
+        # 게시자별로 묶어서 리턴
+        photos = Photo.objects.filter(trip=trip)
+        uploaders = photos.values_list('uploaded_by__name', flat=True)
+        data = []
+        for uploader in set(uploaders):
+            data.append({
+                "uploader": uploader,
+                "photo": PhotoReturnSerializer(photos.filter(uploaded_by__name=uploader), many=True).data
+            })
+        response = {
+            "status": status.HTTP_200_OK,
+            "data": data
         }
         return Response(response)

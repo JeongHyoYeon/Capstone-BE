@@ -21,6 +21,7 @@ urlpatterns = [
     path('photo/<int:trip>/', photo_views.PhotoView.as_view()),
     path('photo/<str:part>/<int:trip>/', photo_tag_views.PhotoTagView.as_view()),  # part는 yolo 또는 face
     path('photo/<str:part>/<int:trip>/<int:tag>/', photo_tag_views.PhotoTagDetailView.as_view()),  # part는 yolo 또는 face
+    path('photo-uploader/<int:trip>/', photo_views.PhotoUploaderView.as_view()),
     # chatGPT api
     path('photo-search/<int:trip>/', chatgpt_views.PhotoSearchView.as_view())
 ]
