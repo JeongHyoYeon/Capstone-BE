@@ -1,4 +1,5 @@
 from datetime import datetime
+from operator import itemgetter
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -10,25 +11,33 @@ from tripfriend.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_ST
 
 class PhotoTagView(APIView):
     def get(self, request, part, trip):
-        # TODO: 썸네일 리턴
         trip_photos = Photo.objects.filter(trip=trip)
         data = []
+
         if part == 'yolo':
-            tag_list = trip_photos.values_list('tag_yolo__tag_name')
-            for tag in tag_list:
+            tag_list = trip_photos.values_list('tag_yolo', 'tag_yolo__tag_name')
+            for tag in set(tag_list):
                 data.append({
-                    "tag": tag,
-                    "thumbnail": None
+                    "tag": tag[1],
+                    "thumbnail": PhotoReturnSerializer(trip_photos.filter(tag_yolo=tag[0]).last()).data
                 })
         elif part == 'face':
-            tag_list = trip_photos.values_list('tag_face__tag_num')
-            for tag in tag_list:
+            tag_list = trip_photos.values_list('tag_face', 'tag_face__tag_num', 'tag_face__custom_name')
+            print(set(tag_list))
+            for tag in set(tag_list):
                 data.append({
-                    "tag": tag,
-                    "thumbnail": None
+                    "tag": tag[1],
+                    "custom_tag": tag[2],
+                    "thumbnail": PhotoReturnSerializer(trip_photos.filter(tag_face=tag[0]).last()).data
                 })
         elif part == 'uploader':
-            pass
+            tag_list = trip_photos.values_list('uploaded_by', 'uploaded_by__name')
+            for tag in set(tag_list):
+                data.append({
+                    "tag": tag[1],
+                    "thumbnail": PhotoReturnSerializer(trip_photos.filter(uploaded_by=tag[0]).last()).data
+                })
+
         response = {
             "status": status.HTTP_200_OK,
             "data": data
