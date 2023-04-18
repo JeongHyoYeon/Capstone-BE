@@ -18,22 +18,24 @@ class PhotoTagView(APIView):
             tag_list = trip_photos.values_list('tag_yolo', 'tag_yolo__tag_name')
             for tag in set(tag_list):
                 data.append({
+                    "tag_id": tag[0],
                     "tag": tag[1],
                     "thumbnail": PhotoReturnSerializer(trip_photos.filter(tag_yolo=tag[0]).last()).data
                 })
         elif part == 'face':
-            tag_list = trip_photos.values_list('tag_face', 'tag_face__tag_num', 'tag_face__custom_name')
+            tag_list = trip_photos.values_list('tag_face', 'tag_face__custom_name')
             print(set(tag_list))
             for tag in set(tag_list):
                 data.append({
+                    "tag_id": tag[0],
                     "tag": tag[1],
-                    "custom_tag": tag[2],
                     "thumbnail": PhotoReturnSerializer(trip_photos.filter(tag_face=tag[0]).last()).data
                 })
         elif part == 'uploader':
             tag_list = trip_photos.values_list('uploaded_by', 'uploaded_by__name')
             for tag in set(tag_list):
                 data.append({
+                    "tag_id": tag[0],
                     "tag": tag[1],
                     "thumbnail": PhotoReturnSerializer(trip_photos.filter(uploaded_by=tag[0]).last()).data
                 })
