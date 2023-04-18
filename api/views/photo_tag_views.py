@@ -20,13 +20,15 @@ class PhotoTagView(APIView):
                     "tag": tag,
                     "thumbnail": None
                 })
-        if part == 'face':
+        elif part == 'face':
             tag_list = trip_photos.values_list('tag_face__tag_num')
             for tag in tag_list:
                 data.append({
                     "tag": tag,
                     "thumbnail": None
                 })
+        elif part == 'uploader':
+            pass
         response = {
             "status": status.HTTP_200_OK,
             "data": data
@@ -38,6 +40,12 @@ class PhotoTagView(APIView):
         print(photos)
         # 모델 돌리기 (인자로 url 리스트) -> output: 태그 붙은 딕셔너리
         # part 인자로 어떤 모델 돌릴지 구분
+        if part == 'yolo':
+            pass
+        elif part == 'face':
+            pass
+        elif part == 'uploader':
+            pass
         # output DB에 저장
         return Response({"사진 자동 분류가 완료되었습니다."}, status.HTTP_200_OK)
 
@@ -46,8 +54,10 @@ class PhotoTagDetailView(APIView):
     def get(self, request, part, trip, tag):
         if part == 'yolo':
             photos = Photo.objects.filter(trip=trip, tag_yolo__photos=tag)
-        if part == 'face':
+        elif part == 'face':
             photos = Photo.objects.filter(trip=trip, tag_face__photos=tag)
+        elif part == 'uploader':
+            photos = Photo.objects.filter(trip=trip, uploaded_by=tag)
         serializer = PhotoReturnSerializer(photos, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
 
@@ -55,8 +65,10 @@ class PhotoTagDetailView(APIView):
         # 파일 다운로드
         if part == 'yolo':
             photos = Photo.objects.filter(trip=trip, tag_yolo__photos=tag)
-        if part == 'face':
+        elif part == 'face':
             photos = Photo.objects.filter(trip=trip, tag_face__photos=tag)
+        elif part == 'uploader':
+            photos = Photo.objects.filter(trip=trip, uploaded_by=tag)
         s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
         for photo in photos:
             s3_client.download(photo)
