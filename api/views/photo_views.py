@@ -15,24 +15,26 @@ class PhotoView(APIView):
         # 날짜별로 묶어서 리턴
         photos = Photo.objects.filter(trip=trip)
         dates = []
+        data = [{
+            "date": None,
+            "photo": []
+        }]
+
         for photo in photos:
             if photo.taken_at is None:
-                dates.append(None)
+                data[0]["photo"].append(
+                    PhotoReturnSerializer(photo).data
+                )
             else:
                 dates.append(photo.taken_at.date())
 
-        data = []
-        for date in set(dates):
-            if date is None:
-                data.append({
-                    "date": None,
-                    "photo": PhotoReturnSerializer(photos.filter(taken_at=None), many=True).data
-                })
-            else:
-                data.append({
-                    "date": date,
-                    "photo": PhotoReturnSerializer(photos.filter(taken_at__day=date.day), many=True).data
-                })
+        for date in sorted(set(dates)):
+            data.append({
+                "date": date,
+                "photo": PhotoReturnSerializer(photos.filter(taken_at__day=date.day), many=True).data
+            })
+
+        data.reverse()
         response = {
             "status": status.HTTP_200_OK,
             "data": data
