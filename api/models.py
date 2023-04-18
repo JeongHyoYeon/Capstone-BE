@@ -92,7 +92,6 @@ class Photo(BaseModel):
     file_name = models.CharField(blank=True, max_length=255)
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE)
     url = models.TextField()
-    tag_custom = models.CharField(blank=True, max_length=20)
     tag_yolo = models.ManyToManyField('TagYolo', related_name='photos')
     tag_face = models.ManyToManyField('TagFace', related_name='photos')
     taken_at = models.DateTimeField(null=True)
@@ -105,4 +104,5 @@ class TagYolo(models.Model):
 
 class TagFace(models.Model):
     tag_num = models.IntegerField()
+    custom_name = models.CharField(blank=True, max_length=20)
 
