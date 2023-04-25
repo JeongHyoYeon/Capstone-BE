@@ -88,19 +88,15 @@ class PhotoView(APIView):
         return Response(response)
 
 
-class PhotoUploaderView(APIView):
-    def get(self, request, trip):
-        # 게시자별로 묶어서 리턴
-        photos = Photo.objects.filter(trip=trip)
-        uploaders = photos.values_list('uploaded_by__name', flat=True)
-        data = []
-        for uploader in set(uploaders):
-            data.append({
-                "uploader": uploader,
-                "photo": PhotoReturnSerializer(photos.filter(uploaded_by__name=uploader), many=True).data
-            })
+class PhotoDownloadView(APIView):
+    def get(self, request, photo):
+        photo = get_object_or_404(Photo, id=photo)
+        s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
+        s3_client.download(photo)
         response = {
             "status": status.HTTP_200_OK,
-            "data": data
+            "message": "다운로드가 완료되었습니다",
+            "data": PhotoReturnSerializer(photo).data
         }
         return Response(response)
+
