@@ -316,7 +316,7 @@ def face_recognition(images):
     url_dict = {}
     input_size = 112
     #crop_base_folder = base_folder + "/crop_images"
-    crop_base_folder = "api/face_recognition/crop_images/"
+    crop_base_folder = "face_recognition/crop_images/"
     crop_folder = crop_base_folder + "crop/"
 
     if not os.path.isdir(crop_base_folder):
@@ -353,7 +353,7 @@ def face_recognition(images):
 
     faces, embeddings = get_embeddings(
             data_root = crop_base_folder ,
-            model_root = "api/face_recognition/checkpoint/backbone_ir50_ms1m_epoch120.pth",
+            model_root = "face_recognition/checkpoint/backbone_ir50_ms1m_epoch120.pth",
             input_size = [input_size, input_size],
         )
     print("faces 길이 = ", len(faces))
