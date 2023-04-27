@@ -5,7 +5,8 @@ from api.auto_functions import DeletePhotos
 
 def start():
     scheduler = BackgroundScheduler(timezone=settings.TIME_ZONE)
-    scheduler.add_job(DeletePhotos.db_delete, CronTrigger.from_crontab('0 0 * * *'))
-    scheduler.add_job(DeletePhotos.s3_delete, CronTrigger.from_crontab('0 0 * * *'))
+    delete_photos = DeletePhotos()
+    scheduler.add_job(delete_photos.db_delete, CronTrigger.from_crontab('0 0 * * *'))
+    scheduler.add_job(delete_photos.s3_delete, CronTrigger.from_crontab('0 0 * * *'))
     scheduler.start()
 

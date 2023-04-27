@@ -13,3 +13,4 @@ class DeletePhotos:
 
     def db_delete(self):
         self.photos.delete()
+
