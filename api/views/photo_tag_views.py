@@ -11,10 +11,14 @@ from tripfriend.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_ST
 
 class PhotoTagView(APIView):
     def get(self, request, part, trip):
+        trip = get_object_or_404(Trip, id=trip)
         trip_photos = Photo.objects.filter(trip=trip)
         data = []
 
         if part == 'yolo':
+            if trip.yolo_request_num == 0:
+                return Response({"아직 객체 분류가 진행되지 않았습니다."}, status.HTTP_200_OK)
+
             tag_list = trip_photos.values_list('tag_yolo', 'tag_yolo__tag_name')
             for tag in set(tag_list):
                 data.append({
@@ -22,7 +26,12 @@ class PhotoTagView(APIView):
                     "tag": tag[1],
                     "thumbnail": PhotoReturnSerializer(trip_photos.filter(tag_yolo=tag[0]).last()).data
                 })
+
         elif part == 'face':
+
+            if trip.face_request_num == 0:
+                return Response({"아직 인물 분류가 진행되지 않았습니다."}, status.HTTP_200_OK)
+
             tag_list = trip_photos.values_list('tag_face', 'tag_face__custom_name')
             print(set(tag_list))
             for tag in set(tag_list):
@@ -31,6 +40,7 @@ class PhotoTagView(APIView):
                     "tag": tag[1],
                     "thumbnail": PhotoReturnSerializer(trip_photos.filter(tag_face=tag[0]).last()).data
                 })
+
         elif part == 'uploader':
             tag_list = trip_photos.values_list('uploaded_by', 'uploaded_by__name')
             for tag in set(tag_list):
@@ -48,12 +58,15 @@ class PhotoTagView(APIView):
 
     def post(self, request, part, trip):
         photos = Photo.objects.filter(trip=trip).values('id', 'url')
-        print(photos)
+        # print(photos)
         # 모델 돌리기 (인자로 url 리스트) -> output: 태그 붙은 딕셔너리
         # part 인자로 어떤 모델 돌릴지 구분
+        # Trip의 yolo_request_num, face_request num 증가시키기
+        # yolo는 is_sorted_yolo false 인 것에 대해서만 돌리고 돌린 것들은 해당 필드 true로 바꾸기
         if part == 'yolo':
             pass
         elif part == 'face':
+            # print(face_recognition(photos)[1])
             pass
         elif part == 'uploader':
             pass

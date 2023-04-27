@@ -24,5 +24,5 @@ urlpatterns = [
     path('photo/<str:part>/<int:trip>/<int:tag>/', photo_tag_views.PhotoTagDetailView.as_view()),
     path('download/<int:photo>/', photo_views.PhotoDownloadView.as_view()),
     # chatGPT api
-    path('photo-search/<int:trip>/', chatgpt_views.PhotoSearchView.as_view())
+    path('search/<int:trip>/', chatgpt_views.PhotoSearchView.as_view())
 ]

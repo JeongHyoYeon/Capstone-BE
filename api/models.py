@@ -85,6 +85,8 @@ class Trip(BaseModel):
     departing_date = models.DateField(default=localdate)
     arriving_date = models.DateField(default=localdate)
     thumbnail = models.TextField(null=True)
+    yolo_request_num = models.IntegerField(default=0)
+    face_request_num = models.IntegerField(default=0)
 
 
 class Photo(BaseModel):
@@ -96,6 +98,7 @@ class Photo(BaseModel):
     tag_face = models.ManyToManyField('TagFace', related_name='photos')
     taken_at = models.DateTimeField(null=True)
     uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    is_sorted_yolo = models.BooleanField(default=False)
 
 
 class TagYolo(models.Model):
