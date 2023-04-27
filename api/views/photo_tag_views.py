@@ -61,6 +61,8 @@ class PhotoTagView(APIView):
         # print(photos)
         # 모델 돌리기 (인자로 url 리스트) -> output: 태그 붙은 딕셔너리
         # part 인자로 어떤 모델 돌릴지 구분
+        # Trip의 yolo_request_num, face_request num 증가시키기
+        # yolo는 is_sorted_yolo false 인 것에 대해서만 돌리고 돌린 것들은 해당 필드 true로 바꾸기
         if part == 'yolo':
             pass
         elif part == 'face':

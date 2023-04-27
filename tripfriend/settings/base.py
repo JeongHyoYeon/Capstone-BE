@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    'django_apscheduler',
 ]
 
 MIDDLEWARE = [
@@ -170,3 +171,9 @@ SIMPLE_JWT = {
 }
 
 OPENAI_KEY = env('OPENAI_KEY')
+
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
+
+APSCHEDULER_RUN_NOW_TIMEOUT = 300  # Seconds, default = 25
+
+SCHEDULER_DEFAULT = True
