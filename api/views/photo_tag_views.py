@@ -7,7 +7,6 @@ from django.shortcuts import get_object_or_404
 from ..serializers import *
 from api.mys3client import MyS3Client
 from tripfriend.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME
-from face_recognition.face_recognition import face_recognition
 
 
 class PhotoTagView(APIView):
@@ -55,7 +54,7 @@ class PhotoTagView(APIView):
         if part == 'yolo':
             pass
         elif part == 'face':
-            print(face_recognition(photos)[1])
+            # print(face_recognition(photos)[1])
             pass
         elif part == 'uploader':
             pass
