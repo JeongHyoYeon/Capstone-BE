@@ -39,3 +39,6 @@ class MyS3Client:
             str(file.file_key),  # key
             save_file  # filename
         )
+
+    def delete(self, file):
+        self.s3_client.delete_object(self.bucket_name, str(file.file_key))
