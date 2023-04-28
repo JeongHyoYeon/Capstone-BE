@@ -91,6 +91,12 @@ class PhotoView(APIView):
 class PhotoDownloadView(APIView):
     def get(self, request, photo):
         photo = get_object_or_404(Photo, id=photo)
+        serializer = PhotoReturnSerializer(photo)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request, photo):
+        # 다운로드 받기
+        photo = get_object_or_404(Photo, id=photo)
         s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
         s3_client.download(photo)
         response = {
