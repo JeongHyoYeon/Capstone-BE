@@ -70,18 +70,18 @@ class PhotoTagView(APIView):
             pass
         elif part == 'face':
             result = face_recognition(photos)[1]
-            trip_serializer = TripSerializer(instance=trip, data={"yolo_request_num": trip.yolo_request_num + 1}, partial=True)
-            if trip_serializer.is_valid():
-                trip_serializer.save()
-            else:
-                return Response(trip_serializer.errors, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+            trip.face_request_num = trip.face_request_num + 1
+            trip.save()
             for image in result:
+                phototagface = PhotoTagFace.objects.filter(photo=image['id'])
+                if phototagface.exists():
+                    phototagface.delete()
                 for idx in image['group_idx']:
-                    PhotoTagFace.objects.create(photo=get_object_or_404(Photo, id=image['id']), tagface=get_object_or_404(TagFace, id=(idx+3)))
-                    print("얼굴 분류 저장")
+                    PhotoTagFace.objects.create(photo=get_object_or_404(Photo, id=image['id']),
+                                                tagface=get_object_or_404(TagFace, id=(idx + 3)))
         elif part == 'uploader':
             pass
-        return Response({"사진 자동 분류가 완료되었습니다."}, status.HTTP_200_OK)
+        return Response(data=PhotoTagSerializer(photos, many=True).data, status=status.HTTP_200_OK)
 
 
 class PhotoTagDetailView(APIView):
