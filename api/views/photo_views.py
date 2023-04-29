@@ -93,15 +93,25 @@ class PhotoDownloadView(APIView):
         photo = get_object_or_404(Photo, id=photo)
         serializer = PhotoReturnSerializer(photo)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
     def post(self, request, photo):
         # 다운로드 받기
         photo = get_object_or_404(Photo, id=photo)
-        s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
-        s3_client.download(photo)
+        # s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
+        # photo_file = s3_client.get_file(photo.file_key)
+        # print(photo_file)
+        # response = {
+        #     "status": status.HTTP_200_OK,
+        #     "headers": {
+        #         "Content-Disposition": "attachment; filename=%s" % photo.file_name
+        #     },
+        #     "data":
+        #     "content-type": 'image/*'
+        # }
+
+        # 임시
         response = {
             "status": status.HTTP_200_OK,
-            "message": "다운로드가 완료되었습니다",
             "data": PhotoReturnSerializer(photo).data
         }
         return Response(response)
