@@ -15,7 +15,8 @@ import torchvision.datasets as datasets
 import torch.nn.functional as F
 import torchvision.transforms as transforms
 
-from backbone import Backbone
+from face_recognition.backbone import Backbone
+
 
 #----------------------------------------------------------
 #                        functions 
