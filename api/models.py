@@ -95,7 +95,7 @@ class Photo(BaseModel):
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE)
     url = models.TextField()
     tag_yolo = models.ManyToManyField('TagYolo', related_name='photos')
-    tag_face = models.ManyToManyField('TagFace', related_name='photos')
+    tag_face = models.ManyToManyField('TagFace', related_name='photos', through='PhotoTagFace')
     taken_at = models.DateTimeField(null=True)
     uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     is_sorted_yolo = models.BooleanField(default=False)
@@ -107,5 +107,11 @@ class TagYolo(models.Model):
 
 class TagFace(models.Model):
     tag_num = models.IntegerField()
-    custom_name = models.CharField(blank=True, max_length=20)
+
+
+class PhotoTagFace(models.Model):
+    photo = models.ForeignKey(Photo, on_delete=models.CASCADE)
+    tagface = models.ForeignKey(TagFace, on_delete=models.CASCADE)
+    custom_name = models.CharField(blank=True, max_length=255)
+
 

@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from ..serializers import *
 from api.mys3client import MyS3Client
 from tripfriend.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME
+from face_recognition.face_recognition import face_recognition
 
 
 class PhotoTagView(APIView):
@@ -58,19 +59,28 @@ class PhotoTagView(APIView):
 
     def post(self, request, part, trip):
         photos = Photo.objects.filter(trip=trip).values('id', 'url')
+        trip = get_object_or_404(Trip, id=trip)
         # print(photos)
         # 모델 돌리기 (인자로 url 리스트) -> output: 태그 붙은 딕셔너리
         # part 인자로 어떤 모델 돌릴지 구분
         # Trip의 yolo_request_num, face_request num 증가시키기
         # yolo는 is_sorted_yolo false 인 것에 대해서만 돌리고 돌린 것들은 해당 필드 true로 바꾸기
+        # output DB에 저장
         if part == 'yolo':
             pass
         elif part == 'face':
-            # print(face_recognition(photos)[1])
-            pass
+            result = face_recognition(photos)[1]
+            trip_serializer = TripSerializer(instance=trip, data={"yolo_request_num": trip.yolo_request_num + 1}, partial=True)
+            if trip_serializer.is_valid():
+                trip_serializer.save()
+            else:
+                return Response(trip_serializer.errors, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+            for image in result:
+                for idx in image['group_idx']:
+                    PhotoTagFace.objects.create(photo=get_object_or_404(Photo, id=image['id']), tagface=get_object_or_404(TagFace, id=(idx+3)))
+                    print("얼굴 분류 저장")
         elif part == 'uploader':
             pass
-        # output DB에 저장
         return Response({"사진 자동 분류가 완료되었습니다."}, status.HTTP_200_OK)
 
 
