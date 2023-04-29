@@ -49,13 +49,6 @@ class PhotoReturnSerializer(serializers.ModelSerializer):
         model = Photo
         fields = ['id', 'file_name', 'trip', 'url', 'uploaded_by', 'taken_at']
 
-class PhotoTagSerializer(serializers.ModelSerializer):
-    tag_yolo = TagYoloSerializer(read_only=True, many=True)
-    tag_face = TagFaceSerializer(read_only=True, many=True)
-    class Meta:
-        model = Photo
-        fields = ['id', 'tag_yolo', 'tag_face']
-
 
 class RegisterSerializer(serializers.ModelSerializer):
 

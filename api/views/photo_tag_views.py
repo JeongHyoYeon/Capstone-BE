@@ -81,7 +81,7 @@ class PhotoTagView(APIView):
                                                 tagface=get_object_or_404(TagFace, id=(idx + 3)))
         elif part == 'uploader':
             pass
-        return Response(data=PhotoTagSerializer(photos, many=True).data, status=status.HTTP_200_OK)
+        return Response({"사진 자동분류가 완료되었습니다"}, status=status.HTTP_200_OK)
 
 
 class PhotoTagDetailView(APIView):
