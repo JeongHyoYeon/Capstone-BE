@@ -72,13 +72,14 @@ class PhotoTagView(APIView):
             result = face_recognition(photos)[1]
             trip.face_request_num = trip.face_request_num + 1
             trip.save()
-            for image in result:
-                phototagface = PhotoTagFace.objects.filter(photo=image['id'])
-                if phototagface.exists():
-                    phototagface.delete()
-                for idx in image['group_idx']:
-                    PhotoTagFace.objects.create(photo=get_object_or_404(Photo, id=image['id']),
-                                                tagface=get_object_or_404(TagFace, id=(idx + 3)))
+            # Todo: tag face 리스트 받아서 저장, Photo에 tag face 저장
+            # for image in result:
+            #     phototagface = PhotoTagFace.objects.filter(photo=image['id'])
+            #     if phototagface.exists():
+            #         phototagface.delete()
+            #     for idx in image['group_idx']:
+            #         PhotoTagFace.objects.create(photo=get_object_or_404(Photo, id=image['id']),
+            #                                     tagface=get_object_or_404(TagFace, id=(idx + 3)))
         elif part == 'uploader':
             pass
         return Response({"사진 자동분류가 완료되었습니다"}, status=status.HTTP_200_OK)
