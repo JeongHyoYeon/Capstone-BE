@@ -90,20 +90,26 @@ class PhotoTagDetailView(APIView):
             photos = Photo.objects.filter(trip=trip, tag_yolo__photos=tag)
         elif part == 'face':
             photos = Photo.objects.filter(trip=trip, tag_face__photos=tag)
-        elif part == 'uploader':
-            photos = Photo.objects.filter(trip=trip, uploaded_by=tag)
         serializer = PhotoReturnSerializer(photos, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
 
-    def post(self, request, part, trip, tag):
-        # 파일 다운로드
-        if part == 'yolo':
-            photos = Photo.objects.filter(trip=trip, tag_yolo__photos=tag)
-        elif part == 'face':
-            photos = Photo.objects.filter(trip=trip, tag_face__photos=tag)
-        elif part == 'uploader':
-            photos = Photo.objects.filter(trip=trip, uploaded_by=tag)
-        s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
-        for photo in photos:
-            s3_client.download(photo)
-        return Response({"다운로드가 완료되었습니다."}, status.HTTP_200_OK)
+    # def post(self, request, part, trip, tag):
+    #     # 파일 다운로드
+    #     if part == 'yolo':
+    #         photos = Photo.objects.filter(trip=trip, tag_yolo__photos=tag)
+    #     elif part == 'face':
+    #         photos = Photo.objects.filter(trip=trip, tag_face__photos=tag)
+    #     elif part == 'uploader':
+    #         photos = Photo.objects.filter(trip=trip, uploaded_by=tag)
+    #     s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
+    #     for photo in photos:
+    #         s3_client.download(photo)
+    #     return Response({"다운로드가 완료되었습니다."}, status.HTTP_200_OK)
+
+
+class PhotoUploaderDetailView(APIView):
+    def get(self, trip, uploader):
+        photos = Photo.objects.filter(trip=trip, uploaded_by=uploader)
+        serializer = PhotoReturnSerializer(photos, many=True)
+        return Response(serializer.data, status.HTTP_200_OK)
+
