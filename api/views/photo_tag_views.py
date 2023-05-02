@@ -109,7 +109,7 @@ class PhotoTagDetailView(APIView):
 
 
 class PhotoUploaderDetailView(APIView):
-    def get(self, trip, user):
+    def get(self, request, trip, user):
         photos = Photo.objects.filter(trip=trip, uploaded_by=user)
         serializer = PhotoReturnSerializer(photos, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
