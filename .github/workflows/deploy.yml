@@ -13,6 +13,8 @@ jobs:
     steps:
     - name: checkout
       uses: actions/checkout@master
+      with:
+        lfs: true
 
     - name: create env file
       run: |
@@ -30,7 +32,6 @@ jobs:
     - name: copy source via ssh key
       uses: burnett01/rsync-deployments@4.1
       with:
-        lfs: true
         switches: -avzr --delete
         remote_path: /home/ubuntu/srv/ubuntu/
         remote_host: ${{ secrets.HOST }}
