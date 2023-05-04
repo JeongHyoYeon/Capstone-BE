@@ -120,7 +120,7 @@ class PhotoDownloadView(APIView):
         # 임시
         response = {
             "status": status.HTTP_200_OK,
-            "data": PhotoReturnSerializer(photo).data
+            "data": photo.url
         }
         return Response(response)
 

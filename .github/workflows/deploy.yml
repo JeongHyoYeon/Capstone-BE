@@ -14,7 +14,7 @@ jobs:
     - name: checkout
       uses: actions/checkout@master
       with:
-        lfs: true
+        lfs: false
 
     - name: create env file
       run: |
