@@ -98,7 +98,7 @@ class PhotoDownloadView(APIView):
 
     def get(self, request, photo):
         photo = get_object_or_404(Photo, id=photo)
-        self.check_object_permissions(self.request, obj=get_object_or_404(Trip, id=photo.trip))
+        self.check_object_permissions(self.request, obj=get_object_or_404(Trip, id=photo.trip_id))
         serializer = PhotoReturnSerializer(photo)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
