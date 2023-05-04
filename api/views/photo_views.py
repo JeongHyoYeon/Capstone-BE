@@ -8,10 +8,14 @@ from api.mys3client import MyS3Client
 from tripfriend.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME
 from PIL import Image
 from PIL.ExifTags import TAGS
+from api.permissions import GroupMembersOnly
 
 
 class PhotoView(APIView):
+    permission_classes = [GroupMembersOnly]
+
     def get(self, request, trip):
+        self.check_object_permissions(self.request, obj=get_object_or_404(Trip, id=trip))
         # 날짜별로 묶어서 리턴
         photos = Photo.objects.filter(trip=trip)
         dates = []
@@ -42,6 +46,7 @@ class PhotoView(APIView):
         return Response(response)
 
     def post(self, request, trip):
+        self.check_object_permissions(self.request, obj=get_object_or_404(Trip, id=trip))
         photos = request.FILES.getlist('photos')
         result_data = []
         s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
@@ -89,8 +94,11 @@ class PhotoView(APIView):
 
 
 class PhotoDownloadView(APIView):
+    permission_classes = [GroupMembersOnly]
+
     def get(self, request, photo):
         photo = get_object_or_404(Photo, id=photo)
+        self.check_object_permissions(self.request, obj=get_object_or_404(Trip, id=photo.trip))
         serializer = PhotoReturnSerializer(photo)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

@@ -6,10 +6,14 @@ from api.models import *
 from api.serializers import PhotoReturnSerializer
 from tripfriend.settings import OPENAI_KEY
 from django.shortcuts import get_object_or_404
+from api.permissions import GroupMembersOnly
 
 
 class PhotoSearchView(APIView):
+    permission_classes = [GroupMembersOnly]
+
     def post(self, request, trip):
+        self.check_object_permissions(self.request, obj=get_object_or_404(Trip, id=trip))
         photos = Photo.objects.filter(trip=trip).values('id', 'uploaded_by__name', 'taken_at',
                                                         'tag_yolo__tag_name', 'tag_face__custom_name')
         photo_list = str(photos)

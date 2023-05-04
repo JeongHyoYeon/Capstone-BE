@@ -6,7 +6,7 @@ from ..serializers import *
 from api.mys3client import MyS3Client
 from tripfriend.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME
 import json
-
+from api.permissions import GroupMembersOnly
 
 class PersonalTripView(APIView):
     def get(self, request):
@@ -26,6 +26,8 @@ class PersonalTripView(APIView):
 
 
 class GroupTripView(APIView):
+    permission_classes = [GroupMembersOnly]
+
     def get(self, request, group):
         trip_list = Trip.objects.filter(group=group)
         serializer = TripSerializer(trip_list, many=True)
@@ -61,13 +63,17 @@ class GroupTripView(APIView):
 
 
 class TripDetailView(APIView):
+    permission_classes = [GroupMembersOnly]
+
     def get(self, request, trip):
         trip = get_object_or_404(Trip, id=trip)
+        self.check_object_permissions(self.request, obj=trip)
         serializer = TripSerializer(trip)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def patch(self, request, trip):
         trip_instance = get_object_or_404(Trip, id=trip)
+        self.check_object_permissions(self.request, obj=trip_instance)
         serializer = TripSerializer(instance=trip_instance, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()

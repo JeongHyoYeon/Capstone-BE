@@ -8,11 +8,15 @@ from ..serializers import *
 from api.mys3client import MyS3Client
 from tripfriend.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME
 from face_recognition.face_recognition import face_recognition
+from api.permissions import GroupMembersOnly
 
 
 class PhotoTagView(APIView):
+    permission_classes = [GroupMembersOnly]
+
     def get(self, request, part, trip):
         trip = get_object_or_404(Trip, id=trip)
+        self.check_object_permissions(self.request, obj=trip)
         trip_photos = Photo.objects.filter(trip=trip)
         data = []
 
@@ -58,8 +62,9 @@ class PhotoTagView(APIView):
         return Response(response)
 
     def post(self, request, part, trip):
-        photos = Photo.objects.filter(trip=trip).values('id', 'url')
         trip = get_object_or_404(Trip, id=trip)
+        self.check_object_permissions(self.request, obj=trip)
+        photos = Photo.objects.filter(trip=trip).values('id', 'url')
         # print(photos)
         # 모델 돌리기 (인자로 url 리스트) -> output: 태그 붙은 딕셔너리
         # part 인자로 어떤 모델 돌릴지 구분
@@ -80,13 +85,14 @@ class PhotoTagView(APIView):
             #     for idx in image['group_idx']:
             #         PhotoTagFace.objects.create(photo=get_object_or_404(Photo, id=image['id']),
             #                                     tagface=get_object_or_404(TagFace, id=(idx + 3)))
-        elif part == 'uploader':
-            pass
         return Response({"사진 자동분류가 완료되었습니다"}, status=status.HTTP_200_OK)
 
 
 class PhotoTagDetailView(APIView):
+    permission_classes = [GroupMembersOnly]
+
     def get(self, request, part, trip, tag):
+        self.check_object_permissions(self.request, obj=get_object_or_404(Trip, id=trip))
         if part == 'yolo':
             photos = Photo.objects.filter(trip=trip, tag_yolo__photos=tag)
         elif part == 'face':
@@ -109,7 +115,10 @@ class PhotoTagDetailView(APIView):
 
 
 class PhotoUploaderDetailView(APIView):
+    permission_classes = [GroupMembersOnly]
+
     def get(self, request, trip, user):
+        self.check_object_permissions(self.request, obj=get_object_or_404(Trip, id=trip))
         photos = Photo.objects.filter(trip=trip, uploaded_by=user)
         serializer = PhotoReturnSerializer(photos, many=True)
         return Response(serializer.data, status.HTTP_200_OK)

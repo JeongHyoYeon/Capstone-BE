@@ -80,7 +80,7 @@ class UserGroup(BaseModel):
 
 
 class Trip(BaseModel):
-    group = models.IntegerField()  # group id 아니고 group_num
+    group = models.IntegerField()
     place = models.CharField(max_length=50)
     departing_date = models.DateField(default=localdate)
     arriving_date = models.DateField(default=localdate)
