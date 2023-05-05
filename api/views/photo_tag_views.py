@@ -72,12 +72,32 @@ class PhotoTagView(APIView):
         # yolo는 is_sorted_yolo false 인 것에 대해서만 돌리고 돌린 것들은 해당 필드 true로 바꾸기
         # output DB에 저장
         if part == 'yolo':
-            pass
+            return Response(photos)
+            # pass
         elif part == 'face':
-            result = face_recognition(photos)[1]
+            result = face_recognition(photos)
             trip.face_request_num = trip.face_request_num + 1
             trip.save()
             # Todo: tag face 리스트 받아서 저장, Photo에 tag face 저장
+            tag_id_list = []
+            tag_num_list = []
+            for image in result[2]:
+                sorted_before = get_object_or_404(Photo, id=image['id']).tag_face
+                if sorted_before.exists():
+                    sorted_before.clear()
+            for group_idx in result[1]:
+                TagFace.objects.create(tag_num=group_idx)
+                tag_id_list.append(TagFace.objects.last().id)
+                tag_num_list.append(group_idx)
+            for image in result[2]:
+                photo = get_object_or_404(Photo, id=image['id'])
+                for idx in image['group_idx']:
+                    if idx == -2:
+                        photo.tag_face.add(1)
+                    elif idx == -1:
+                        photo.tag_face.add(2)
+                    else:
+                        photo.tag_face.add(get_object_or_404(TagFace, id=tag_id_list[tag_num_list.index(idx)]))
             # for image in result:
             #     phototagface = PhotoTagFace.objects.filter(photo=image['id'])
             #     if phototagface.exists():
