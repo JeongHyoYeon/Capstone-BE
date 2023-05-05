@@ -72,13 +72,11 @@ class PhotoTagView(APIView):
         # yolo는 is_sorted_yolo false 인 것에 대해서만 돌리고 돌린 것들은 해당 필드 true로 바꾸기
         # output DB에 저장
         if part == 'yolo':
-            return Response(photos)
-            # pass
+            pass
         elif part == 'face':
             result = face_recognition(photos)
             trip.face_request_num = trip.face_request_num + 1
             trip.save()
-            # Todo: tag face 리스트 받아서 저장, Photo에 tag face 저장
             tag_id_list = []
             tag_num_list = []
             for image in result[2]:
@@ -98,13 +96,6 @@ class PhotoTagView(APIView):
                         photo.tag_face.add(2)
                     else:
                         photo.tag_face.add(get_object_or_404(TagFace, id=tag_id_list[tag_num_list.index(idx)]))
-            # for image in result:
-            #     phototagface = PhotoTagFace.objects.filter(photo=image['id'])
-            #     if phototagface.exists():
-            #         phototagface.delete()
-            #     for idx in image['group_idx']:
-            #         PhotoTagFace.objects.create(photo=get_object_or_404(Photo, id=image['id']),
-            #                                     tagface=get_object_or_404(TagFace, id=(idx + 3)))
         return Response({"사진 자동분류가 완료되었습니다"}, status=status.HTTP_200_OK)
 
 

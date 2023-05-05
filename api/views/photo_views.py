@@ -9,6 +9,7 @@ from tripfriend.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_ST
 from PIL import Image
 from PIL.ExifTags import TAGS
 from api.permissions import GroupMembersOnly
+import base64
 
 
 class PhotoView(APIView):
@@ -105,22 +106,23 @@ class PhotoDownloadView(APIView):
     def post(self, request, photo):
         # 다운로드 받기
         photo = get_object_or_404(Photo, id=photo)
-        # s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
-        # photo_file = s3_client.get_file(photo.file_key)
-        # print(photo_file)
-        # response = {
-        #     "status": status.HTTP_200_OK,
-        #     "headers": {
-        #         "Content-Disposition": "attachment; filename=%s" % photo.file_name
-        #     },
-        #     "data":
-        #     "content-type": 'image/*'
-        # }
+        self.check_object_permissions(self.request, obj=get_object_or_404(Trip, id=photo.trip_id))
+        # URL 보내는 방법
+        return Response(PhotoReturnSerializer(photo).data, status=status.HTTP_200_OK)
 
-        # 임시
-        response = {
-            "status": status.HTTP_200_OK,
-            "data": photo.url
-        }
-        return Response(response)
+        # File 객체 보내는 방법
+        # s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
+        # image = s3_client.get_file(photo.file_key)
+        # image_data = image.get()['Body'].read()
+        # encoded_image = base64.b64encode(image_data).decode('utf-8')
+        # print(image.content_type)
+        # return Response(
+        #     encoded_image, status=status.HTTP_200_OK,
+        #     content_type=image.content_type,
+        #     headers={
+        #     'Content-Disposition': f'attachment; filename="{photo.file_name}"'
+        #     }
+        # )
+        # return response
+
 

@@ -40,8 +40,11 @@ class MyS3Client:
     #         save_file  # filename
     #     )
 
-    # def get_file(self, file_key):
-    #     return self.s3_client.get_object(Bucket=self.bucket_name, Key=str(file_key))
+    def get_file(self, file_key):
+        # return self.s3_client.get_object(Bucket=self.bucket_name, Key=str(file_key))
+        s3_resource = boto3.resource('s3')
+        object = s3_resource.Object(self.bucket_name, str(file_key))
+        return object
 
     def delete(self, file):
         self.s3_client.delete_object(self.bucket_name, str(file.file_key))
