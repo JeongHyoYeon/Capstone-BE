@@ -175,3 +175,4 @@ cython_debug/
 /.idea/
 /.env.prod
 /api/migrations
+/face_recognition/crop_images

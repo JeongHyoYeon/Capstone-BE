@@ -9,6 +9,7 @@ from tripfriend.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_ST
 from PIL import Image
 from PIL.ExifTags import TAGS
 from api.permissions import GroupMembersOnly
+from django.http import FileResponse
 
 
 class PhotoView(APIView):
@@ -105,22 +106,21 @@ class PhotoDownloadView(APIView):
     def post(self, request, photo):
         # 다운로드 받기
         photo = get_object_or_404(Photo, id=photo)
-        # s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
-        # photo_file = s3_client.get_file(photo.file_key)
-        # print(photo_file)
+        self.check_object_permissions(self.request, obj=get_object_or_404(Trip, id=photo.trip_id))
         # response = {
         #     "status": status.HTTP_200_OK,
         #     "headers": {
-        #         "Content-Disposition": "attachment; filename=%s" % photo.file_name
+        #         "Content-Disposition": "attachment",
+        #         "filename": photo.file_name
         #     },
-        #     "data":
-        #     "content-type": 'image/*'
+        #     "data": photo.url
         # }
+        # return Response(response)
+        s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
+        image = open(s3_client.get_file(photo.file_key), 'rb')
+        response = FileResponse(image)
+        response.headers['Content-Disposition'] = 'attachment'
+        response.headers['filename'] = photo.file_name
+        return response
 
-        # 임시
-        response = {
-            "status": status.HTTP_200_OK,
-            "data": photo.url
-        }
-        return Response(response)
 
