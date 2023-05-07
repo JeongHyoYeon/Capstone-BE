@@ -56,7 +56,8 @@ def run_yolov5(images):
 
     re_download = True
 
-    base_path = "/content/drive/MyDrive/Capstone_Yolov5_Test/yolov5/"
+    #base_path = "/content/drive/MyDrive/Capstone_Yolov5_Test/yolov5/"
+    base_path = "yolov5/"
     yolov5_path = base_path + "yolov5/"
     images_folder_path = base_path + "images/"
 
