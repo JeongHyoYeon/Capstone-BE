@@ -1,3 +1,3 @@
 # AfterTrip - 백엔드
 ## ERD
-![image](https://user-images.githubusercontent.com/86969518/235579689-081d9b6a-db78-4905-a6d6-2466e5ec540a.png)
+![image](https://user-images.githubusercontent.com/86969518/236693791-f41020d2-c179-4852-a5f7-3dadd0ea4bb7.png)
