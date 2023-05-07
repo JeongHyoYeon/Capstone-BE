@@ -7,7 +7,8 @@ from pathlib import Path
 import torch
 import torch.nn.functional as F
 
-ROOT = "/content/drive/MyDrive/Capstone_Yolov5_Test/yolov5/yolov5"
+#ROOT = "/content/drive/MyDrive/Capstone_Yolov5_Test/yolov5/yolov5"
+ROOT = "../yolov5/yolov5"
 if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))  # add ROOT to PATH
 ROOT = Path(ROOT)
