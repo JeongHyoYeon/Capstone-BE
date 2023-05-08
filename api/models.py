@@ -85,8 +85,6 @@ class Trip(BaseModel):
     departing_date = models.DateField(default=localdate)
     arriving_date = models.DateField(default=localdate)
     thumbnail = models.TextField(null=True)
-    yolo_request_num = models.IntegerField(default=0)
-    face_request_num = models.IntegerField(default=0)
 
 
 class Photo(BaseModel):
