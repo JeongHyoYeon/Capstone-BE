@@ -96,3 +96,4 @@ def run_yolov5(images):
     print_images_dict(images)
 
     print("==========END YOLOV5==========\n")
+
