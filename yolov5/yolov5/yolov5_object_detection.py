@@ -7,7 +7,8 @@ from pathlib import Path
 import torch
 
 #ROOT = "/content/drive/MyDrive/Capstone_Yolov5_Test/yolov5/yolov5"
-ROOT = "../yolov5/yolov5"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+ROOT = os.path.join(BASE_DIR, 'yolov5/yolov5')
 if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))  # add ROOT to PATH
 ROOT = Path(ROOT)
