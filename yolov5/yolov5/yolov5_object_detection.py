@@ -6,6 +6,9 @@ from pathlib import Path
 
 import torch
 
+import pathlib
+pathlib.PosixPath = os.path
+
 #ROOT = "/content/drive/MyDrive/Capstone_Yolov5_Test/yolov5/yolov5"
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 ROOT = os.path.join(BASE_DIR, 'yolov5/yolov5')
