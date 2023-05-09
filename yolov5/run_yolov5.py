@@ -78,7 +78,6 @@ def run_yolov5(images):
         source="yolov5/images/*.jpg",  # file/dir/URL/glob/screen/0(webcam)
         nosave=True  # do not save images/videos
     )
-
     print_images_dict(images)
 
     # [STEP 2. yolov5 : object detection [object tag] ]
@@ -92,8 +91,9 @@ def run_yolov5(images):
         source="yolov5/images/*.jpg",  # file/dir/URL/glob/screen/0(webcam)
         nosave=True  # do not save images/videos
     )
-
     print_images_dict(images)
-
+    
     print("==========END YOLOV5==========\n")
+    
+    return images
 
