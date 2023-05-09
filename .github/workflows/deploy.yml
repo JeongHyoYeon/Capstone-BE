@@ -6,7 +6,6 @@ on:
       - main
 
 jobs:
-
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -15,6 +14,11 @@ jobs:
       uses: actions/checkout@master
       with:
         lfs: true
+
+    - name: docker prune
+      run: |
+        echo "docker system prune"
+        sudo docker system prune -f
 
     - name: create env file
       run: |
