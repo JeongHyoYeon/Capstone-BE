@@ -59,17 +59,19 @@ class PhotoTagView(APIView):
         trip = get_object_or_404(Trip, id=trip)
         self.check_object_permissions(self.request, obj=trip)
         photos = Photo.objects.filter(trip=trip).values('id', 'url')
-        # print(photos)
-        # 모델 돌리기 (인자로 url 리스트) -> output: 태그 붙은 딕셔너리
-        # part 인자로 어떤 모델 돌릴지 구분
-        # yolo는 is_sorted_yolo false 인 것에 대해서만 돌리고 돌린 것들은 해당 필드 true로 바꾸기
-        # output DB에 저장
         if part == 'yolo':
+            photos = photos.filter(is_sorted_yolo=False)
             result = run_yolov5(photos)
+            # output DB에 저장
+            for image in result:
+                photo = get_object_or_404(Photo, id=image['id'])
+                for tag in image['yolo_tag']:
+                    photo.tag_yolo.add(get_object_or_404(TagYolo, tag_name=tag))
+                photo.is_sorted_yolo = True
+                photo.save()
+
         elif part == 'face':
             result = face_recognition(photos)
-            trip.face_request_num = trip.face_request_num + 1
-            trip.save()
             tag_id_list = []
             tag_num_list = []
             for image in result[2]:
