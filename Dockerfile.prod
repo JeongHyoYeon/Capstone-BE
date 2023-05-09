@@ -44,9 +44,9 @@ WORKDIR $APP_HOME
 # install dependencies
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
-RUN apt-get update -y && apt-get install -y build-essential libmariadb-dev libglib2.0-0 libgl1-mesa-glx ffmpeg libsm6 libxext6
-RUN pip install mysqlclient
-RUN pip install --no-cache /wheels/*
+RUN apt-get update -y && apt-get install --virtual -y build-essential libmariadb-dev libglib2.0-0 libgl1-mesa-glx ffmpeg libsm6 libxext6
+RUN pip install --virtual mysqlclient
+RUN pip install --no-cache --virtual /wheels/*
 
 # copy entrypoint-prod.sh
 COPY ./config/docker/entrypoint.prod.sh $APP_HOME
