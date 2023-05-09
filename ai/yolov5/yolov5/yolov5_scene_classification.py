@@ -76,7 +76,7 @@ def run_yolov5_scene(
                     }]
     """
     # check
-    check_requirements(exclude=('tensorboard', 'thop'))
+    # check_requirements(exclude=('tensorboard', 'thop'))
 
     source = str(source)
     save_img = not nosave and not source.endswith('.txt')  # save inference images
@@ -96,10 +96,12 @@ def run_yolov5_scene(
     device = select_device(device)
     # model = DetectMultiBackend(weights, device=device, dnn=dnn, data=data, fp16=half)
     # model = torch.hub.load('path/to/yolov5', 'custom', path='path/to/best.pt', source='local')
+    print(1)
     model = torch.hub.load(YOLO_CLONE_PATH,
                            "custom",
                            path=os.path.join(YOLO_PATH, "checkpoint/yolov5_scene_best.pt"),
                            source="local")
+    print(2)
     stride, names, pt = model.stride, model.names, model.pt
     imgsz = check_img_size(imgsz, s=stride)  # check image size
 

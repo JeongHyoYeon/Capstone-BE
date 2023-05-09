@@ -6,8 +6,8 @@ import shutil
 #import utils
 #display = utils.notebook_init()  # checks
 # yolo Classification, ObjectDetection
-from yolov5.yolov5.yolov5_scene_classification import run_yolov5_scene
-from yolov5.yolov5.yolov5_object_detection import run_yolov5_object
+from ai.yolov5.yolov5.yolov5_scene_classification import run_yolov5_scene
+from ai.yolov5.yolov5.yolov5_object_detection import run_yolov5_object
 
 def download_images(images, images_folder_path, re_download):
   # 폴더 생성

@@ -1,14 +1,10 @@
-from datetime import datetime
-from operator import itemgetter
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from ..serializers import *
-from api.mys3client import MyS3Client
-from tripfriend.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME
-from face_recognition.face_recognition import face_recognition
-from yolov5.run_yolov5 import run_yolov5
+from ai.face_recognition.face_recognition import face_recognition
+from ai.yolov5.run_yolov5 import run_yolov5
 from api.permissions import GroupMembersOnly
 
 
