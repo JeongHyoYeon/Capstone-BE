@@ -4,20 +4,20 @@
 # pull official base image
 FROM python:3.8-slim-buster as builder
 
-# set work directory
-WORKDIR /usr/src/app
-
-
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# install psycopg2 dependencies
 
-# install dependencies
+RUN apt-get update -y && apt-get install -y build-essential libmariadb-dev libglib2.0-0 libgl1-mesa-glx ffmpeg libsm6 libxext6
+
+# set work directory
+WORKDIR /usr/src/app
+
 RUN pip install --upgrade pip
 COPY ./requirements.txt .
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
+
 
 #########
 # FINAL #
@@ -25,15 +25,14 @@ RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requir
 
 # pull official base image
 FROM python:3.8-slim-buster
-RUN pip install --upgrade pip
 
-# create directory for the app user
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+RUN apt-get update -y && apt-get install -y libmariadb-dev libglib2.0-0 libgl1-mesa-glx ffmpeg libsm6 libxext6
+
 RUN mkdir -p /home/app
-
-# create the app user
 RUN adduser --system --group app
-
-# create the appropriate directories
 ENV HOME=/home/app
 ENV APP_HOME=/home/app/web
 RUN mkdir $APP_HOME
@@ -41,21 +40,13 @@ RUN mkdir $APP_HOME/static
 RUN mkdir $APP_HOME/media
 WORKDIR $APP_HOME
 
-# install dependencies
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
-RUN apt-get update -y && apt-get install -y build-essential libmariadb-dev libglib2.0-0 libgl1-mesa-glx ffmpeg libsm6 libxext6
-RUN pip install mysqlclient
-RUN pip install --no-cache /wheels/*
+RUN pip install --upgrade pip
+RUN pip install mysqlclient && \
+    pip install --no-cache /wheels/*
 
-# copy entrypoint-prod.sh
 COPY ./config/docker/entrypoint.prod.sh $APP_HOME
-
-# copy project
 COPY . $APP_HOME
-
-# chown all the files to the app user
 RUN chown -R app:app $APP_HOME
-
-# change to the app user
 USER app
