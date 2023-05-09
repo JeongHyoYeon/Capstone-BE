@@ -7,6 +7,9 @@ from pathlib import Path
 import torch
 import torch.nn.functional as F
 
+import pathlib
+pathlib.PosixPath = os.path
+
 #ROOT = "/content/drive/MyDrive/Capstone_Yolov5_Test/yolov5/yolov5"
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 ROOT = os.path.join(BASE_DIR, 'yolov5/yolov5')
@@ -85,13 +88,20 @@ def run_yolov5_scene(
     if not nosave:
         (save_dir / 'labels' if save_txt else save_dir).mkdir(parents=True, exist_ok=True)  # make dir
 
+    print("Load Model")
     # Load model
     device = select_device(device)
+    print(weights)
+    print(device)  #cpu
+    print(dnn)  #False
+    print(data)  #C:\Users\user\Documents\GitHub\tripfriend\yolov5\yolov5\data\coco128.yaml
     model = DetectMultiBackend(weights, device=device, dnn=dnn, data=data, fp16=half)
     stride, names, pt = model.stride, model.names, model.pt
     imgsz = check_img_size(imgsz, s=stride)  # check image size
+    print("Load Model 성공")
 
     # Dataloader
+    print("Dataloader")
     bs = 1  # batch_size
     if webcam:
         view_img = check_imshow(warn=True)
@@ -102,7 +112,7 @@ def run_yolov5_scene(
     else:
         dataset = LoadImages(source, img_size=imgsz, transforms=classify_transforms(imgsz[0]), vid_stride=vid_stride)
     vid_path, vid_writer = [None] * bs, [None] * bs
-
+    print("Dataloader 성공 ")
     # Run inference
     model.warmup(imgsz=(1 if pt else bs, 3, *imgsz))  # warmup
     seen, windows, dt = 0, [], (Profile(), Profile(), Profile())

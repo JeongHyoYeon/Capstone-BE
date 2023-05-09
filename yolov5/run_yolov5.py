@@ -90,7 +90,7 @@ def run_yolov5(images):
         yolov5_path,
         weights="yolov5/checkpoint/yolov5_object_best.pt",  # model.pt path(s)
         source="yolov5/images/*.jpg",  # file/dir/URL/glob/screen/0(webcam)
-        nosave=False  # do not save images/videos
+        nosave=True  # do not save images/videos
     )
 
     print_images_dict(images)

@@ -176,3 +176,4 @@ cython_debug/
 /.env.prod
 /api/migrations
 /face_recognition/crop_images
+/yolov5/images
