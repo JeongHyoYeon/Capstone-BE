@@ -37,7 +37,7 @@ WORKDIR $APP_HOME
 
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
-RUN apt-get update -y && apt-get install -y libmariadb-dev libglib2.0-0 libgl1-mesa-glx ffmpeg libsm6 libxext6
+RUN apt-get update -y && apt-get install -y build-essential libmariadb-dev libglib2.0-0 libgl1-mesa-glx ffmpeg libsm6 libxext6
 RUN pip install --upgrade pip
 RUN pip install mysqlclient && \
     pip install --no-cache /wheels/*
