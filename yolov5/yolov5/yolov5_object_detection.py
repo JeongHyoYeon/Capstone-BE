@@ -9,12 +9,16 @@ import torch
 import pathlib
 pathlib.PosixPath = os.path
 
-#ROOT = "/content/drive/MyDrive/Capstone_Yolov5_Test/yolov5/yolov5"
+#YOLO_PATH = "/home/ubuntu/Capstone-CV-YOLOv5/yolov5/"
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-ROOT = os.path.join(BASE_DIR, 'yolov5/yolov5')
-if str(ROOT) not in sys.path:
-    sys.path.append(str(ROOT))  # add ROOT to PATH
-ROOT = Path(ROOT)
+YOLO_PATH = os.path.join(BASE_DIR, 'yolov5/')
+YOLO_CLONE_PATH = os.path.join(YOLO_PATH, "yolov5/")
+
+if str(YOLO_CLONE_PATH) not in sys.path:
+    sys.path.append(str(YOLO_CLONE_PATH))  # add YOLO_CLONE_PATH to PATH
+
+YOLO_PATH = Path(YOLO_PATH)
+YOLO_CLONE_PATH = Path(YOLO_CLONE_PATH)
 
 from models.common import DetectMultiBackend
 from utils.dataloaders import IMG_FORMATS, VID_FORMATS, LoadImages, LoadScreenshots, LoadStreams
@@ -31,11 +35,11 @@ def run_yolov5_object(
         base_path,
         yolov5_path,
 
-        weights=ROOT / 'yolov5s-cls.pt',  # model.pt path(s)
-        source=ROOT / 'data/images',  # file/dir/URL/glob/screen/0(webcam)
+        weights=YOLO_CLONE_PATH / 'yolov5s-cls.pt',  # model.pt path(s)
+        source=YOLO_CLONE_PATH / 'data/images',  # file/dir/URL/glob/screen/0(webcam)
         nosave=False,  # do not save images/videos
 
-        data=ROOT / 'data/coco128.yaml',  # dataset.yaml path
+        data=YOLO_CLONE_PATH / 'data/coco128.yaml',  # dataset.yaml path
         imgsz=(640, 640),  # inference size (height, width)
         conf_thres=0.25,  # confidence threshold
         iou_thres=0.45,  # NMS IOU threshold
@@ -50,7 +54,7 @@ def run_yolov5_object(
         augment=False,  # augmented inference
         visualize=False,  # visualize features
         update=False,  # update all models
-        project=ROOT / 'runs/detect',  # save results to project/name
+        project=YOLO_CLONE_PATH / 'runs/detect',  # save results to project/name
         name='exp',  # save results to project/name
         exist_ok=False,  # existing project/name ok, do not increment
         line_thickness=3,  # bounding box thickness (pixels)

@@ -54,29 +54,30 @@ def run_yolov5(images):
     """
     print("==========START YOLOV5==========\n")
 
-    re_download = True
+    re_download = False
 
-    #base_path = "/content/drive/MyDrive/Capstone_Yolov5_Test/yolov5/"
-    base_path = "yolov5/"
-    yolov5_path = base_path + "yolov5/"
-    images_folder_path = base_path + "images/"
+    #YOLO_PATH = "/content/drive/MyDrive/Capstone_Yolov5_Test/yolov5/"
+    YOLO_PATH = "yolov5/"
+    YOLO_CLONE_PATH = os.path.join(YOLO_PATH, "yolov5/")
+    IMAGES_PATH = os.path.join(YOLO_PATH, "images/")
 
     # [STEP 0. url로 이미지 다운받아 images 폴더에 저장]
     print("\n\n")
     print("Step0. download images at folder\n")
-    download_images(images, images_folder_path, re_download)
+    download_images(images, IMAGES_PATH, re_download)
 
     # [STEP 1. yolov5 : scene classification [scene tag] ]
     print("\n\n")
     print("Step1. scene classification\n")
     images = run_yolov5_scene(
         images,
-        base_path,
-        yolov5_path,
+        YOLO_PATH,
+        YOLO_CLONE_PATH,
         classification_threshold=0.4,
-        weights="yolov5/checkpoint/yolov5_scene_best.pt",  # model.pt path(s)
-        source="yolov5/images/*.jpg",  # file/dir/URL/glob/screen/0(webcam)
-        nosave=True  # do not save images/videos
+        weights=os.path.join(YOLO_PATH, "checkpoint/yolov5_scene_best.pt"),  # model.pt path(s)
+        source=os.path.join(IMAGES_PATH, "*.jpg"),  # file/dir/URL/glob/screen/0(webcam)
+        nosave=True,  # do not save images/videos
+        device='cpu'
     )
 
     print_images_dict(images)
@@ -86,14 +87,15 @@ def run_yolov5(images):
     print("Step2. object detection\n")
     images = run_yolov5_object(
         images,
-        base_path,
-        yolov5_path,
-        weights="yolov5/checkpoint/yolov5_object_best.pt",  # model.pt path(s)
-        source="yolov5/images/*.jpg",  # file/dir/URL/glob/screen/0(webcam)
-        nosave=True  # do not save images/videos
+        YOLO_PATH,
+        YOLO_CLONE_PATH,
+        weights=os.path.join(YOLO_PATH, "checkpoint/yolov5_object_best.pt"),  # model.pt path(s)
+        source=os.path.join(IMAGES_PATH, "*.jpg"),  # file/dir/URL/glob/screen/0(webcam)
+        nosave=True,  # do not save images/videos
+        device='cpu'
     )
 
     print_images_dict(images)
-
     print("==========END YOLOV5==========\n")
 
+    return images

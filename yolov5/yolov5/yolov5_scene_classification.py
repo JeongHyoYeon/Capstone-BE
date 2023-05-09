@@ -10,12 +10,16 @@ import torch.nn.functional as F
 import pathlib
 pathlib.PosixPath = os.path
 
-#ROOT = "/content/drive/MyDrive/Capstone_Yolov5_Test/yolov5/yolov5"
+#YOLO_PATH = "/home/ubuntu/Capstone-CV-YOLOv5/yolov5/"
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-ROOT = os.path.join(BASE_DIR, 'yolov5/yolov5')
-if str(ROOT) not in sys.path:
-    sys.path.append(str(ROOT))  # add ROOT to PATH
-ROOT = Path(ROOT)
+YOLO_PATH = os.path.join(BASE_DIR, 'yolov5/')
+YOLO_CLONE_PATH = os.path.join(YOLO_PATH, "yolov5/")
+
+if str(YOLO_CLONE_PATH) not in sys.path:
+    sys.path.append(str(YOLO_CLONE_PATH))  # add YOLO_CLONE_PATH to PATH
+
+YOLO_PATH = Path(YOLO_PATH)
+YOLO_CLONE_PATH = Path(YOLO_CLONE_PATH)
 
 from models.common import DetectMultiBackend
 from utils.augmentations import classify_transforms
@@ -34,11 +38,11 @@ def run_yolov5_scene(
         yolov5_path,
         classification_threshold=0.4,  # probability threshold
 
-        weights=ROOT / 'yolov5s-cls.pt',  # model.pt path(s)
-        source=ROOT / 'data/images',  # file/dir/URL/glob/screen/0(webcam)
+        weights=YOLO_CLONE_PATH / 'yolov5s-cls.pt',  # model.pt path(s)
+        source=YOLO_CLONE_PATH / 'data/images',  # file/dir/URL/glob/screen/0(webcam)
         nosave=False,  # do not save images/videos
 
-        data=ROOT / 'data/coco128.yaml',  # dataset.yaml path
+        data=YOLO_CLONE_PATH / 'data/coco128.yaml',  # dataset.yaml path
         imgsz=(224, 224),  # inference size (height, width)
         device='',  # cuda device, i.e. 0 or 0,1,2,3 or cpu
         view_img=False,  # show results
@@ -46,7 +50,7 @@ def run_yolov5_scene(
         augment=False,  # augmented inference
         visualize=False,  # visualize features
         update=False,  # update all models
-        project=ROOT / 'runs/predict-cls',  # save results to project/name
+        project=YOLO_CLONE_PATH / 'runs/predict-cls',  # save results to project/name
         name='exp',  # save results to project/name
         exist_ok=False,  # existing project/name ok, do not increment
         half=False,  # use FP16 half-precision inference
@@ -72,7 +76,7 @@ def run_yolov5_scene(
                     }]
     """
     # check
-    # check_requirements(exclude=('tensorboard', 'thop'))
+    check_requirements(exclude=('tensorboard', 'thop'))
 
     source = str(source)
     save_img = not nosave and not source.endswith('.txt')  # save inference images
@@ -88,20 +92,18 @@ def run_yolov5_scene(
     if not nosave:
         (save_dir / 'labels' if save_txt else save_dir).mkdir(parents=True, exist_ok=True)  # make dir
 
-    print("Load Model")
     # Load model
     device = select_device(device)
-    print(weights)
-    print(device)  #cpu
-    print(dnn)  #False
-    print(data)  #C:\Users\user\Documents\GitHub\tripfriend\yolov5\yolov5\data\coco128.yaml
-    model = DetectMultiBackend(weights, device=device, dnn=dnn, data=data, fp16=half)
+    # model = DetectMultiBackend(weights, device=device, dnn=dnn, data=data, fp16=half)
+    # model = torch.hub.load('path/to/yolov5', 'custom', path='path/to/best.pt', source='local')
+    model = torch.hub.load(YOLO_CLONE_PATH,
+                           "custom",
+                           path=os.path.join(YOLO_PATH, "checkpoint/yolov5_scene_best.pt"),
+                           source="local")
     stride, names, pt = model.stride, model.names, model.pt
     imgsz = check_img_size(imgsz, s=stride)  # check image size
-    print("Load Model 성공")
 
     # Dataloader
-    print("Dataloader")
     bs = 1  # batch_size
     if webcam:
         view_img = check_imshow(warn=True)
@@ -112,7 +114,7 @@ def run_yolov5_scene(
     else:
         dataset = LoadImages(source, img_size=imgsz, transforms=classify_transforms(imgsz[0]), vid_stride=vid_stride)
     vid_path, vid_writer = [None] * bs, [None] * bs
-    print("Dataloader 성공 ")
+
     # Run inference
     model.warmup(imgsz=(1 if pt else bs, 3, *imgsz))  # warmup
     seen, windows, dt = 0, [], (Profile(), Profile(), Profile())
