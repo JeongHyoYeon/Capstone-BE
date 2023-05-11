@@ -7,10 +7,8 @@ from django.shortcuts import get_object_or_404
 from ..serializers import *
 from api.mys3client import MyS3Client
 from tripfriend.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME
-# from face_recognition.face_recognition import face_recognition
-# from yolov5.run_yolov5 import run_yolov5
 from api.permissions import GroupMembersOnly
-
+from api.request import flask_post_request
 
 class PhotoTagView(APIView):
     permission_classes = [GroupMembersOnly]
@@ -61,7 +59,7 @@ class PhotoTagView(APIView):
         photos = Photo.objects.filter(trip=trip).values('id', 'url')
         if part == 'yolo':
             photos = photos.filter(is_sorted_yolo=False)
-            result = run_yolov5(photos)
+            result = flask_post_request(endpoint=part, images=photos)
             # output DB에 저장
             for image in result:
                 photo = get_object_or_404(Photo, id=image['id'])
@@ -71,18 +69,18 @@ class PhotoTagView(APIView):
                 photo.save()
 
         elif part == 'face':
-            result = face_recognition(photos)
+            result = flask_post_request(endpoint=part, images=photos)
             tag_id_list = []
             tag_num_list = []
-            for image in result[2]:
+            for image in result['images']:
                 sorted_before = get_object_or_404(Photo, id=image['id']).tag_face
                 if sorted_before.exists():
                     sorted_before.clear()
-            for group_idx in result[1]:
+            for group_idx in result['group_idx_list']:
                 TagFace.objects.create(tag_num=group_idx)
                 tag_id_list.append(TagFace.objects.last().id)
                 tag_num_list.append(group_idx)
-            for image in result[2]:
+            for image in result['images']:
                 photo = get_object_or_404(Photo, id=image['id'])
                 for idx in image['group_idx']:
                     if idx == -2:
