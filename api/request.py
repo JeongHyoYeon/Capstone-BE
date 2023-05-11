@@ -1,20 +1,20 @@
-import requests
-from tripfriend.settings import FLASK_IP
+import requests, json
+from tripfriend.settings import FLASK_IP_PORT
 from rest_framework.response import Response
 from rest_framework import status
 
 def flask_post_request(endpoint, images):
-    url = "http://" + FLASK_IP + "/" + endpoint
+    url = "http://" + FLASK_IP_PORT + "/" + endpoint
     data = {
-        "image_list": images
+        "image_list": list(images)
     }
 
     try:
-        response = requests.post(url=url, data=data)
+        response = requests.post(url=url, json=data)
         if response.status_code == 200:
-            return response
+            return json(response)
         else:
-            return Response({"요쳥 실패"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"요쳥 실패"}, status=response.status_code)
     except requests.exceptions.RequestException as e:
-        return Response({"요청 실패: " + e}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"요쳥 실패: " + str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
