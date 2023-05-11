@@ -12,7 +12,7 @@ def flask_post_request(endpoint, images):
     try:
         response = requests.post(url=url, json=data)
         if response.status_code == 200:
-            return json(response)
+            return response
         else:
             return Response({"요쳥 실패"}, status=response.status_code)
     except requests.exceptions.RequestException as e:

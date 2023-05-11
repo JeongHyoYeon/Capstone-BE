@@ -63,7 +63,7 @@ class PhotoTagView(APIView):
         result = flask_post_request(endpoint=part, images=photos)
         if result.status_code == 200:
             if part == 'yolo':
-                for image in result:
+                for image in result.json():
                     photo = get_object_or_404(Photo, id=image['id'])
                     for tag in image['yolo_tag']:
                         photo.tag_yolo.add(get_object_or_404(TagYolo, tag_name=tag))
@@ -71,9 +71,9 @@ class PhotoTagView(APIView):
                     photo.save()
 
             elif part == 'face':
-                result = flask_post_request(endpoint=part, images=photos)
                 tag_id_list = []
                 tag_num_list = []
+                result = result.json()
                 for image in result['images']:
                     sorted_before = get_object_or_404(Photo, id=image['id']).tag_face
                     if sorted_before.exists():
