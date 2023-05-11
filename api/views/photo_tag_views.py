@@ -59,37 +59,40 @@ class PhotoTagView(APIView):
         photos = Photo.objects.filter(trip=trip).values('id', 'url')
         if part == 'yolo':
             photos = photos.filter(is_sorted_yolo=False)
-            result = flask_post_request(endpoint=part, images=photos)
-            # output DB에 저장
-            for image in result:
-                photo = get_object_or_404(Photo, id=image['id'])
-                for tag in image['yolo_tag']:
-                    photo.tag_yolo.add(get_object_or_404(TagYolo, tag_name=tag))
-                photo.is_sorted_yolo = True
-                photo.save()
 
-        elif part == 'face':
-            result = flask_post_request(endpoint=part, images=photos)
-            tag_id_list = []
-            tag_num_list = []
-            for image in result['images']:
-                sorted_before = get_object_or_404(Photo, id=image['id']).tag_face
-                if sorted_before.exists():
-                    sorted_before.clear()
-            for group_idx in result['group_idx_list']:
-                TagFace.objects.create(tag_num=group_idx)
-                tag_id_list.append(TagFace.objects.last().id)
-                tag_num_list.append(group_idx)
-            for image in result['images']:
-                photo = get_object_or_404(Photo, id=image['id'])
-                for idx in image['group_idx']:
-                    if idx == -2:
-                        photo.tag_face.add(1)
-                    elif idx == -1:
-                        photo.tag_face.add(2)
-                    else:
-                        photo.tag_face.add(get_object_or_404(TagFace, id=tag_id_list[tag_num_list.index(idx)]))
-        return Response({"사진 자동분류가 완료되었습니다"}, status=status.HTTP_200_OK)
+        result = flask_post_request(endpoint=part, images=photos)
+        if result.status_code == 200:
+            if part == 'yolo':
+                for image in result:
+                    photo = get_object_or_404(Photo, id=image['id'])
+                    for tag in image['yolo_tag']:
+                        photo.tag_yolo.add(get_object_or_404(TagYolo, tag_name=tag))
+                    photo.is_sorted_yolo = True
+                    photo.save()
+
+            elif part == 'face':
+                result = flask_post_request(endpoint=part, images=photos)
+                tag_id_list = []
+                tag_num_list = []
+                for image in result['images']:
+                    sorted_before = get_object_or_404(Photo, id=image['id']).tag_face
+                    if sorted_before.exists():
+                        sorted_before.clear()
+                for group_idx in result['group_idx_list']:
+                    TagFace.objects.create(tag_num=group_idx)
+                    tag_id_list.append(TagFace.objects.last().id)
+                    tag_num_list.append(group_idx)
+                for image in result['images']:
+                    photo = get_object_or_404(Photo, id=image['id'])
+                    for idx in image['group_idx']:
+                        if idx == -2:
+                            photo.tag_face.add(1)
+                        elif idx == -1:
+                            photo.tag_face.add(2)
+                        else:
+                            photo.tag_face.add(get_object_or_404(TagFace, id=tag_id_list[tag_num_list.index(idx)]))
+            return Response({"사진 자동분류가 완료되었습니다"}, status=status.HTTP_200_OK)
+        return result
 
 
 class PhotoTagDetailView(APIView):
