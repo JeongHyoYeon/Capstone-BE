@@ -101,6 +101,7 @@ class Photo(BaseModel):
 
 class TagYolo(models.Model):
     tag_name = models.CharField(max_length=20)
+    tag_name_kr = models.CharField(max_length=20)
 
 
 class TagFace(models.Model):
