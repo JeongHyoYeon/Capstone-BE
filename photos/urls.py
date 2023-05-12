@@ -1,11 +1,7 @@
 from django.urls import path
-from .views import trip_views, chatgpt_views, photo_views
+from .views import chatgpt_views, photo_views
 
 urlpatterns = [
-    # 여행 api
-    path('trip/user/', trip_views.PersonalTripView.as_view()),
-    path('trip/<int:group>/', trip_views.GroupTripView.as_view()),
-    path('trip/detail/<int:trip>/', trip_views.TripDetailView.as_view()),
     # 사진 api
     # part는 yolo, face 또는 uploader
     path('photo/<int:trip>/', photo_views.PhotoView.as_view()),

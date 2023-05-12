@@ -2,27 +2,12 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from api.serializers import *
+from .serializers import *
 from photos.mys3client import MyS3Client
 from tripfriend.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME
 import json
 from photos.permissions import GroupMembersOnly
-
-class PersonalTripView(APIView):
-    def get(self, request):
-        group_list = Group.objects.filter(usergroup__user_id=request.user.id, usergroup__is_confirmed=True)
-        trip_list = Trip.objects.filter(group__in=group_list)
-        data = []
-        for trip in trip_list:
-            data.append({
-                "group": get_object_or_404(Group, id=trip.group).name,
-                "trip_info": TripSerializer(trip).data
-            })
-        response = {
-            "status": status.HTTP_200_OK,
-            "data": data
-        }
-        return Response(response)
+from accounts.models import *
 
 
 class GroupTripView(APIView):

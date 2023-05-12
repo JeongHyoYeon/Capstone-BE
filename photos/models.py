@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.timezone import localdate, localtime
-
+from accounts.models import User
+from trips.models import Trip
 
 class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -11,14 +12,6 @@ class BaseModel(models.Model):
 
 
 # Create your models here.
-class Trip(BaseModel):
-    group = models.IntegerField()
-    place = models.CharField(max_length=50)
-    departing_date = models.DateField(default=localdate)
-    arriving_date = models.DateField(default=localdate)
-    thumbnail = models.TextField(null=True)
-
-
 class Photo(BaseModel):
     file_key = models.UUIDField(unique=True)
     file_name = models.CharField(blank=True, max_length=255)
