@@ -6,7 +6,7 @@ from api.models import *
 from api.serializers import PhotoReturnSerializer
 from tripfriend.settings import OPENAI_KEY
 from django.shortcuts import get_object_or_404
-from api.permissions import GroupMembersOnly
+from photos.permissions import GroupMembersOnly
 
 
 class PhotoSearchView(APIView):

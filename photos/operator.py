@@ -1,7 +1,7 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from django.conf import settings
-from api.auto_functions import DeletePhotos
+from photos.auto_functions import DeletePhotos
 
 
 def start():

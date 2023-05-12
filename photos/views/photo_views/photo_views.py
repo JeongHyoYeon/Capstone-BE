@@ -4,12 +4,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from api.serializers import *
-from api.mys3client import MyS3Client
+from photos.mys3client import MyS3Client
 from tripfriend.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME
 from PIL import Image
 from PIL.ExifTags import TAGS
-from api.permissions import GroupMembersOnly
-import base64
+from photos.permissions import GroupMembersOnly
 
 
 class PhotoView(APIView):

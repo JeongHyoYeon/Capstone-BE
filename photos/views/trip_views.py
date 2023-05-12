@@ -2,11 +2,11 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from ..serializers import *
-from api.mys3client import MyS3Client
+from api.serializers import *
+from photos.mys3client import MyS3Client
 from tripfriend.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME
 import json
-from api.permissions import GroupMembersOnly
+from photos.permissions import GroupMembersOnly
 
 class PersonalTripView(APIView):
     def get(self, request):
