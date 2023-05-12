@@ -95,7 +95,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'tripfriend.wsgi.application'
 
-AUTH_USER_MODEL = 'api.User'
+AUTH_USER_MODEL = 'accounts.User'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases

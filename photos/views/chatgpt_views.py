@@ -2,8 +2,8 @@ import openai
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from api.models import *
-from api.serializers import PhotoReturnSerializer
+from photos.models import *
+from photos.serializers import PhotoReturnSerializer
 from tripfriend.settings import OPENAI_KEY
 from django.shortcuts import get_object_or_404
 from photos.permissions import GroupMembersOnly
