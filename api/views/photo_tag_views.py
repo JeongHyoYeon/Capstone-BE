@@ -20,7 +20,7 @@ class PhotoTagView(APIView):
         data = []
 
         if part == 'yolo':
-            tag_list = trip_photos.values_list('tag_yolo', 'tag_yolo__tag_name')
+            tag_list = trip_photos.values_list('tag_yolo', 'tag_yolo__tag_name_kr')
             for tag in set(tag_list):
                 if tag[0] is None:
                     continue
@@ -34,6 +34,8 @@ class PhotoTagView(APIView):
             tag_list = trip_photos.values_list('tag_face', 'tag_face__custom_name')
             print(set(tag_list))
             for tag in set(tag_list):
+                if tag[0] is None:
+                    continue
                 data.append({
                     "tag_id": tag[0],
                     "tag": tag[1],
