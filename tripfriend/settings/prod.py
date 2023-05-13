@@ -1,6 +1,7 @@
 from .base import *
 
-DEBUG = env('DEBUG')
+# DEBUG = env('DEBUG')
+DEBUG = True
 ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS')
 
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
