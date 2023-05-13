@@ -5,4 +5,4 @@ from .models import *
 class TripSerializer(serializers.ModelSerializer):
     class Meta:
         model = Trip
-        exclude = ['created_at', 'updated_at']
+        fields = '__all__'
