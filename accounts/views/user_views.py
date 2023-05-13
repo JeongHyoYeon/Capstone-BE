@@ -6,9 +6,10 @@ from rest_framework.response import Response
 from django.contrib.auth.hashers import make_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.permissions import AllowAny
-from ..serializers import *
+from accounts.serializers import *
 import requests
 import re
+
 
 # Create your views here.
 class RegisterView(APIView):

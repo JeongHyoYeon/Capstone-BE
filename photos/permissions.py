@@ -1,7 +1,7 @@
 from rest_framework.permissions import BasePermission
 from rest_framework.exceptions import PermissionDenied, NotAuthenticated
 from django.shortcuts import get_object_or_404
-from api.models import *
+from accounts.models import Group
 
 
 class GroupMembersOnly(BasePermission):

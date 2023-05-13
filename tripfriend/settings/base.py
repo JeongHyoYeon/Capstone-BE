@@ -46,7 +46,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'api.apps.ApiConfig',
+    'accounts',
+    'trips',
+    'photos',
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
@@ -94,7 +96,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'tripfriend.wsgi.application'
 
-AUTH_USER_MODEL = 'api.User'
+AUTH_USER_MODEL = 'accounts.User'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
