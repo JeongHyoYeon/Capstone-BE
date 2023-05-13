@@ -10,7 +10,7 @@ urlpatterns = [
     path('login/refresh/', TokenRefreshView.as_view()),
     path('logout/', user_views.LogoutView.as_view()),
     # 그룹 api
-    path('group/', group_views.GroupView.as_view()),
+    path('groups/', group_views.GroupView.as_view()),
     path('invite/', group_views.GroupInviteListView.as_view()),
     path('invite/<int:usergroup>/', group_views.GroupInviteView.as_view())
 ]
