@@ -5,6 +5,9 @@ from django.shortcuts import get_object_or_404
 from photos.serializers import *
 from photos.permissions import GroupMembersOnly
 from photos.request import flask_post_request
+from accounts.models import *
+from trips.models import *
+
 
 class PhotoTagView(APIView):
     permission_classes = [GroupMembersOnly]
