@@ -1,14 +1,19 @@
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.db import models
-
+from django.utils.timezone import localdate, localtime
 
 # Create your models here.
 class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(null=True, default=None)
 
     class Meta:
         abstract = True
+
+    def delete(self, using=None, keep_parents=False):
+        self.deleted_at = localtime
+        self.save(update_fields=['deleted_at'])
 
 
 class UserManager(BaseUserManager):

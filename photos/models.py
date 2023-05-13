@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils.timezone import localdate, localtime
 from accounts.models import User
 from trips.models import Trip
 
@@ -11,7 +10,6 @@ class BaseModel(models.Model):
         abstract = True
 
 
-# Create your models here.
 class Photo(BaseModel):
     file_key = models.UUIDField(unique=True)
     file_name = models.CharField(blank=True, max_length=255)
