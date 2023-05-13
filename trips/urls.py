@@ -4,6 +4,6 @@ from .views import *
 
 urlpatterns = [
     # 여행 api
-    path('trip/<int:group>/', GroupTripView.as_view()),
-    path('trip/detail/<int:trip>/', TripDetailView.as_view()),
+    path('<int:group>/', GroupTripView.as_view()),
+    path('detail/<int:trip>/', TripDetailView.as_view()),
     ]
