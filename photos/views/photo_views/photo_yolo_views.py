@@ -33,12 +33,12 @@ class PhotoYoloView(APIView):
         }
         return Response(response)
 
-    def post(self, request, part, trip):
+    def post(self, request, trip):
         trip = get_object_or_404(Trip, id=trip)
         self.check_object_permissions(self.request, obj=trip)
         photos = Photo.objects.filter(trip=trip, is_sorted_yolo=False).values('id', 'url')
 
-        result = flask_post_request(endpoint=part, images=photos)
+        result = flask_post_request(endpoint="yolo", images=photos)
         if result.status_code == 200:
             for image in result.json():
                 photo = get_object_or_404(Photo, id=image['id'])

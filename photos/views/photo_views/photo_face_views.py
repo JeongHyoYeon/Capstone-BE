@@ -33,12 +33,12 @@ class PhotoFaceView(APIView):
         }
         return Response(response)
 
-    def post(self, request, part, trip):
+    def post(self, request, trip):
         trip = get_object_or_404(Trip, id=trip)
         self.check_object_permissions(self.request, obj=trip)
         photos = Photo.objects.filter(trip=trip).values('id', 'url')
 
-        result = flask_post_request(endpoint=part, images=photos)
+        result = flask_post_request(endpoint="face", images=photos)
         if result.status_code == 200:
             tag_id_list = []
             tag_num_list = []
@@ -67,7 +67,7 @@ class PhotoFaceView(APIView):
 class PhotoFaceDetailView(APIView):
     permission_classes = [GroupMembersOnly]
 
-    def get(self, request, part, trip, tag):
+    def get(self, request, trip, tag):
         self.check_object_permissions(self.request, obj=get_object_or_404(Trip, id=trip))
         photos = Photo.objects.filter(trip=trip, tag_face__photos=tag)
         serializer = PhotoReturnSerializer(photos, many=True)
