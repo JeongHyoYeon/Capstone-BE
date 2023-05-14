@@ -9,7 +9,6 @@ from tripfriend.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_ST
 from PIL import Image
 from PIL.ExifTags import TAGS
 from photos.permissions import GroupMembersOnly
-from accounts.models import *
 from trips.models import *
 
 
