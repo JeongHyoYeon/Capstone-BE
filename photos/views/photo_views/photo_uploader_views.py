@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from photos.serializers import *
 from photos.permissions import GroupMembersOnly
 from trips.models import *
+from accounts.models import User
 
 
 class PhotoUploaderView(APIView):
@@ -37,6 +38,9 @@ class PhotoUploaderDetailView(APIView):
     def get(self, request, trip, user):
         self.check_object_permissions(self.request, obj=get_object_or_404(Trip, id=trip))
         photos = Photo.objects.filter(trip=trip, uploaded_by=user)
-        serializer = PhotoReturnSerializer(photos, many=True)
-        return Response(serializer.data, status.HTTP_200_OK)
+        data = {
+            "tag": get_object_or_404(User, id=user).name,
+            "photos": PhotoReturnSerializer(photos, many=True).data
+        }
+        return Response(data, status.HTTP_200_OK)
 

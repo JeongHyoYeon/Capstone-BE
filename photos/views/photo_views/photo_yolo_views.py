@@ -56,5 +56,8 @@ class PhotoYoloDetailView(APIView):
     def get(self, request, trip, tag):
         self.check_object_permissions(self.request, obj=get_object_or_404(Trip, id=trip))
         photos = Photo.objects.filter(trip=trip, tag_yolo=tag)
-        serializer = PhotoReturnSerializer(photos, many=True)
-        return Response(serializer.data, status.HTTP_200_OK)
+        data = {
+            "tag": get_object_or_404(TagYolo, id=tag).tag_name_kr,
+            "photos": PhotoReturnSerializer(photos, many=True).data
+        }
+        return Response(data, status.HTTP_200_OK)
