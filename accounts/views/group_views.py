@@ -81,8 +81,8 @@ class GroupInviteListView(APIView):
 
 class GroupInviteView(APIView):
     def patch(self, request, usergroup):
-        user_group_instance = get_object_or_404(UserGroup, id=usergroup, is_confirmed=False)
-        serializer = UserGroupSerializer(instance=user_group_instance, data={"is_confirmed": True}, partial=True)
+        user_group = get_object_or_404(UserGroup, id=usergroup, is_confirmed=False)
+        serializer = UserGroupSerializer(instance=user_group, data={"is_confirmed": True}, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)

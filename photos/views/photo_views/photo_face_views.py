@@ -75,3 +75,13 @@ class PhotoFaceDetailView(APIView):
             "photos": PhotoReturnSerializer(photos, many=True).data
         }
         return Response(data, status.HTTP_200_OK)
+
+    def patch(self, request, trip, tag):
+        self.check_object_permissions(self.request, obj=get_object_or_404(Trip, id=trip))
+        tagface = get_object_or_404(TagFace, id=tag)
+        serializer = TagFaceSerializer(tagface, {'custom_name': request.data['custom_name']}, partial=True)  # 다른거 바뀌면 안돼서..
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
