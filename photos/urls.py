@@ -13,7 +13,7 @@ urlpatterns = [
     # 폴더 안
     path('face/<int:trip>/<int:tag>/', photo_views.PhotoFaceDetailView.as_view()),
     path('yolo/<int:trip>/<int:tag>/', photo_views.PhotoYoloDetailView.as_view()),
-    path('uploader/<int:trip>/<str:user>/', photo_views.PhotoUploaderDetailView),
+    path('uploader/<int:trip>/<str:user>/', photo_views.PhotoUploaderDetailView.as_view()),
 
     # 개별 사진
     path('download/<int:photo>/', photo_views.PhotoDownloadView.as_view()),
