@@ -56,6 +56,12 @@ class GroupView(APIView):
 
 class GroupInviteListView(APIView):
     def post(self, request):
+        if request.user.id == request.data['user']:
+            return Response({"본인에게 초대를 보낼 수 없습니다"}, status=status.HTTP_409_CONFLICT)
+
+        elif UserGroup.objects.filter(user=request.data['user'], group=request.data['group'], deleted_at=None).exists():
+            return Response({"이미 보낸 초대입니다"}, status=status.HTTP_409_CONFLICT)
+
         data = {
             "group": request.data['group'],
             "user": request.data['user'],
@@ -90,6 +96,6 @@ class GroupInviteView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, usergroup):
-        user_group = UserGroup.objects.filter(id=usergroup, is_confirmed=False)
-        user_group.delete()
+        user_group = get_object_or_404(UserGroup, id=usergroup, is_confirmed=False)
+        user_group.delete()  # soft delete
         return Response({"초대가 삭제되었습니다"}, status=status.HTTP_204_NO_CONTENT)
