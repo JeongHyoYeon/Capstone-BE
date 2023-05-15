@@ -1,6 +1,6 @@
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.db import models
-from django.utils.timezone import localdate, localtime
+from django.utils.timezone import localdate, localtime, now
 
 # Create your models here.
 class BaseModel(models.Model):
@@ -12,7 +12,7 @@ class BaseModel(models.Model):
         abstract = True
 
     def delete(self, using=None, keep_parents=False):
-        self.deleted_at = localtime
+        self.deleted_at = now().strftime("%Y-%m-%d %H:%M:%S")
         self.save(update_fields=['deleted_at'])
 
 
