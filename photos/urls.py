@@ -16,7 +16,7 @@ urlpatterns = [
     path('uploader/<int:trip>/<str:user>/', photo_views.PhotoUploaderDetailView.as_view()),
 
     # 개별 사진
-    path('download/<int:photo>/', photo_views.PhotoDownloadView.as_view()),
+    path('detail/<int:photo>/', photo_views.PhotoDetailView.as_view()),
 
     # chatGPT api
     path('search/<int:trip>/', chatgpt_views.PhotoSearchView.as_view())

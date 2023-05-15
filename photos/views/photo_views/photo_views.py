@@ -94,7 +94,7 @@ class PhotoView(APIView):
         return Response(response)
 
 
-class PhotoDownloadView(APIView):
+class PhotoDetailView(APIView):
     permission_classes = [GroupMembersOnly]
 
     def get(self, request, photo):
@@ -103,26 +103,8 @@ class PhotoDownloadView(APIView):
         serializer = PhotoReturnSerializer(photo)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def post(self, request, photo):
-        # 다운로드 받기
+    def delete(self, request, photo):
         photo = get_object_or_404(Photo, id=photo)
         self.check_object_permissions(self.request, obj=get_object_or_404(Trip, id=photo.trip_id))
-        # URL 보내는 방법
-        return Response(PhotoReturnSerializer(photo).data, status=status.HTTP_200_OK)
-
-        # File 객체 보내는 방법
-        # s3_client = MyS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME)
-        # image = s3_client.get_file(photo.file_key)
-        # image_data = image.get()['Body'].read()
-        # encoded_image = base64.b64encode(image_data).decode('utf-8')
-        # print(image.content_type)
-        # return Response(
-        #     encoded_image, status=status.HTTP_200_OK,
-        #     content_type=image.content_type,
-        #     headers={
-        #     'Content-Disposition': f'attachment; filename="{photo.file_name}"'
-        #     }
-        # )
-        # return response
-
-
+        photo.delete()
+        return Response({"사진이 삭제되었습니다"}, status=status.HTTP_204_NO_CONTENT)
