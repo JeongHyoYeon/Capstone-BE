@@ -6,7 +6,7 @@ from .serializers import *
 from photos.mys3client import MyS3Client
 from tripfriend.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME
 import json
-from photos.permissions import GroupMembersOnly
+from base.permissions import GroupMembersOnly
 from accounts.models import *
 
 

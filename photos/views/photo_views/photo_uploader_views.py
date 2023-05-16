@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from photos.serializers import *
-from photos.permissions import GroupMembersOnly
+from base.permissions import GroupMembersOnly
 from trips.models import *
 from accounts.models import User
 

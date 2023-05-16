@@ -8,7 +8,7 @@ from photos.mys3client import MyS3Client
 from tripfriend.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME
 from PIL import Image
 from PIL.ExifTags import TAGS
-from photos.permissions import GroupMembersOnly
+from base.permissions import GroupMembersOnly
 from trips.models import *
 
 

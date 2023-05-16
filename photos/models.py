@@ -1,13 +1,7 @@
 from django.db import models
 from accounts.models import User
 from trips.models import Trip
-
-class BaseModel(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        abstract = True
+from base.models import BaseModel
 
 
 class Photo(BaseModel):

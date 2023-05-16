@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.timezone import localdate, localtime
-from accounts.models import BaseModel, Group
+from accounts.models import Group
+from base.models import BaseModel
 
 
 # Create your models here.
