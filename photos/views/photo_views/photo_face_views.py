@@ -21,11 +21,11 @@ class PhotoFaceView(APIView):
         for tag in set(tag_list):
             if tag[0] is None:
                 continue
-            trip_photos.annotate(tag_faces=Count('tag_face')).filter(tag_faces=1)
+            thumbnail = trip_photos.annotate(tag_faces=Count('tag_face')).filter(tag_face=tag[0]).order_by('tag_faces').first()
             data.append({
                 "tag_id": tag[0],
                 "tag": tag[1],
-                "thumbnail": PhotoReturnSerializer(trip_photos.annotate(tag_faces=Count('tag_face')).filter(tag_faces=1).last()).data
+                "thumbnail": PhotoReturnSerializer(thumbnail).data
             })
 
         response = {
