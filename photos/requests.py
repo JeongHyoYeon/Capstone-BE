@@ -1,10 +1,10 @@
-import requests, json
-from tripfriend.settings import FLASK_IP_PORT
+import requests
+from tripfriend.settings import FLASK_HOST
 from rest_framework.response import Response
 from rest_framework import status
 
 def flask_post_request(endpoint, images):
-    url = "http://" + FLASK_IP_PORT + "/" + endpoint
+    url = "http://" + FLASK_HOST + "/" + endpoint
     data = {
         "image_list": list(images)
     }
