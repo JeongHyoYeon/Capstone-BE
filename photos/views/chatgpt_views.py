@@ -31,6 +31,8 @@ class PhotoSearchView(APIView):
                 {"role": "system", "content": "It's okay to be wrong, so use the information given to you "
                                               "to guess as much as possible and let me know"},
                 {"role": "user", "content": "This is a list of photos and information about each photo"},
+                {"role": "user", "content": "If you find the ids that fits the question return just the ids separated by space."},
+                {"role": "user", "content": "Add no more words!"},
                 {"role": "user", "content": photo_list},
                 {"role": "user", "content": key_desc},
                 {"role": "user", "content": user_input}
