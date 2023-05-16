@@ -7,7 +7,6 @@ from base.permissions import GroupMembersOnly
 from photos.requests import flask_post_request
 from trips.models import *
 
-
 class PhotoFaceView(APIView):
     permission_classes = [GroupMembersOnly]
 
@@ -24,7 +23,7 @@ class PhotoFaceView(APIView):
             data.append({
                 "tag_id": tag[0],
                 "tag": tag[1],
-                "thumbnail": PhotoReturnSerializer(trip_photos.filter(tag_face=tag[0]).last()).data
+                "thumbnail": PhotoReturnSerializer(trip_photos.filter(tag_face=tag[0], tag_face__count=1).last()).data
             })
 
         response = {
