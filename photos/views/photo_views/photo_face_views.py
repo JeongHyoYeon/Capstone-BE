@@ -6,6 +6,7 @@ from photos.serializers import *
 from base.permissions import GroupMembersOnly
 from photos.requests import flask_post_request
 from trips.models import *
+from django.db.models import Count
 
 class PhotoFaceView(APIView):
     permission_classes = [GroupMembersOnly]
@@ -20,10 +21,11 @@ class PhotoFaceView(APIView):
         for tag in set(tag_list):
             if tag[0] is None:
                 continue
+            trip_photos.annotate(tag_faces=Count('tag_face')).filter(tag_faces=1)
             data.append({
                 "tag_id": tag[0],
                 "tag": tag[1],
-                "thumbnail": PhotoReturnSerializer(trip_photos.filter(tag_face=tag[0], tag_face__photos__count=1).last()).data
+                "thumbnail": PhotoReturnSerializer(trip_photos.annotate(tag_faces=Count('tag_face')).filter(tag_faces=1).last()).data
             })
 
         response = {
