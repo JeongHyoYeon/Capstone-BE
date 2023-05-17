@@ -24,6 +24,7 @@ then
 fi
 
 echo "docker system prune"
+sudo docker stop $(sudo docker ps -a -q)
 sudo docker system prune -f
 
 echo "start docker-compose up: ubuntu"
