@@ -36,7 +36,8 @@ class PhotoSearchView(APIView):
                 {"role": "user", "content": photo_list},
                 {"role": "user", "content": key_desc},
                 {"role": "user", "content": user_input}
-            ]
+            ],
+            temperature=0.2
         )
         output = chatgpt_output['choices'][0]['message']['content']
         data = []
