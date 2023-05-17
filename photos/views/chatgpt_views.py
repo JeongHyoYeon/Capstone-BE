@@ -31,11 +31,11 @@ class PhotoSearchView(APIView):
                 {"role": "system", "content": "It's okay to be wrong, so use the information given to you "
                                               "to guess as much as possible and let me know"},
                 {"role": "user", "content": "This is a list of photos and information about each photo"},
-                {"role": "user", "content": "질문에 맞는 사진들의 id만 띄어쓰기로 구분해서 알려줘. 다른 말 절대 추가하지 말고 숫자만 리턴해"},
-                {"role": "user", "content": "정보를 찾지 못했으면 한국어로 대답해"},
                 {"role": "user", "content": photo_list},
                 {"role": "user", "content": key_desc},
-                {"role": "user", "content": user_input}
+                {"role": "user", "content": user_input},
+                {"role": "user", "content": "질문에 맞는 사진들의 id만 띄어쓰기로 구분해서 알려줘. 다른 말 절대 추가하지 말고 숫자만 리턴해"},
+                {"role": "user", "content": "정보를 찾지 못했으면 한국어로 대답해"}
             ],
             temperature=0.2
         )
