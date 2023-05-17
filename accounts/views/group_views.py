@@ -11,10 +11,8 @@ class GroupView(APIView):
         data = []
         for user_group in user_groups:
             group = get_object_or_404(Group, id=user_group.group.id)
-            user_list = User.objects.filter(usergroup__group=group.id, usergroup__is_confirmed=True)
-            user_name_list = []
-            for user in user_list:
-                user_name_list.append(user.name)
+            user_name_list = User.objects.filter(usergroup__group=group.id, usergroup__is_confirmed=True).values_list(
+                'name', flat=True)
             data.append({
                 "group_info": GroupSerializer(group).data,
                 "user_in_group": user_name_list
