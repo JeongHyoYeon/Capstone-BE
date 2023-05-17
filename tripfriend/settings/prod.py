@@ -1,7 +1,7 @@
 from .base import *
 
-# DEBUG = env('DEBUG')
-DEBUG = True
+DEBUG = env('DEBUG')
+
 ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS')
 
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
@@ -19,3 +19,4 @@ DATABASES = {
 
 CELERY_BROKER_URL = 'redis://redis-server:6379/0'
 CELERY_RESULT_BACKEND = 'redis://redis-server:6379/0'
+CELERY_RESULT_SERIALIZER = 'json'

@@ -4,7 +4,8 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from photos.serializers import *
 from base.permissions import GroupMembersOnly
-from photos.requests import flask_post_request
+# from photos.requests import flask_post_request
+from photos.tasks import flask_post_request, save_results
 from trips.models import *
 from django.db.models import Count
 
@@ -38,31 +39,12 @@ class PhotoFaceView(APIView):
         trip = get_object_or_404(Trip, id=trip)
         self.check_object_permissions(self.request, obj=trip)
         photos = Photo.objects.filter(trip=trip).values('id', 'url')
+        response = Response({"사진 자동분류를 요청하였습니다"}, status=status.HTTP_202_ACCEPTED)
+        task = flask_post_request.apply_async(args=("face", photos), kwargs={'result': True})
 
-        result = flask_post_request(endpoint="face", images=photos)
-        if result.status_code == 200:
-            tag_id_list = []
-            tag_num_list = []
-            result = result.json()
-            for image in result['images']:
-                sorted_before = get_object_or_404(Photo, id=image['id']).tag_face
-                if sorted_before.exists():
-                    sorted_before.clear()
-            for group_idx in result['group_idx_list']:
-                TagFace.objects.create(tag_num=group_idx)
-                tag_id_list.append(TagFace.objects.last().id)
-                tag_num_list.append(group_idx)
-            for image in result['images']:
-                photo = get_object_or_404(Photo, id=image['id'])
-                for idx in image['group_idx']:
-                    if idx == -2:
-                        photo.tag_face.add(1)
-                    elif idx == -1:
-                        photo.tag_face.add(2)
-                    else:
-                        photo.tag_face.add(get_object_or_404(TagFace, id=tag_id_list[tag_num_list.index(idx)]))
-            return Response({"사진 자동분류가 완료되었습니다"}, status=status.HTTP_200_OK)
-        return result
+        response['X-Task-ID'] = task.id
+        save_results.delay(task.id)
+        return response
 
 
 class PhotoFaceDetailView(APIView):
