@@ -16,10 +16,16 @@ class GroupTripView(APIView):
     def get(self, request, group):
         trip_list = Trip.objects.filter(group=group)
         serializer = TripSerializer(trip_list, many=True)
+        group = get_object_or_404(Group, id=group)
+        user_list = User.objects.filter(usergroup__group=group.id, usergroup__is_confirmed=True)
+        user_name_list = []
+        for user in user_list:
+            user_name_list.append(user.name)
         response = {
             "status": status.HTTP_200_OK,
             "data": {
-                "group_name": get_object_or_404(Group, id=group).name,
+                "group_name": group.name,
+                "group_members": user_name_list,
                 "trip_list": serializer.data
             }
         }
