@@ -48,7 +48,7 @@ services:
     restart: unless-stopped
     command: celery -A tripfriend worker --loglevel=info
     depends_on:
-      - redis
+      - redis-server
     volumes:
       - ./:/home/app/
 
