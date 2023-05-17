@@ -16,3 +16,6 @@ DATABASES = {
         'PORT': env('DATABASE_PORT'),
     }
 }
+
+CELERY_BROKER_URL = 'redis://redis-server:6379/0'
+CELERY_RESULT_BACKEND = 'redis://redis-server:6379/0'

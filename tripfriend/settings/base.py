@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'django_apscheduler',
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [

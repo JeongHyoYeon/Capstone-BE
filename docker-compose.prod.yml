@@ -31,6 +31,28 @@ services:
     depends_on:
       - web
 
+  redis-server:
+    container_name: redis-server
+    image: redis:5.0-alpine
+    ports:
+      - 6379:6379
+    restart: unless-stopped
+    volumes:
+      - redis:/home/app/web/data
+
+  worker:
+    container_name: worker
+    build:
+      context: ./
+      dockerfile: Dockerfile.prod
+    restart: unless-stopped
+    command: celery -A tripfriend worker --loglevel=info
+    depends_on:
+      - redis
+    volumes:
+      - ./:/home/app/
+
 volumes:
   static:
   media:
+  redis:
