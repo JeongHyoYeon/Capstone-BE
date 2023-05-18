@@ -12,7 +12,7 @@ from django_celery_results.models import TaskResult
 def flask_post_request(endpoint, images):
     url = "http://" + FLASK_HOST + "/" + endpoint
     data = {
-        "image_list": list(images)
+        "image_list": images
     }
 
     try:
