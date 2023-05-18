@@ -7,7 +7,7 @@ from accounts.serializers import *
 
 class GroupView(APIView):
     def get(self, request):
-        user_groups = UserGroup.objects.filter(user=request.user.id, is_confirmed=True)
+        user_groups = UserGroup.objects.filter(user=request.user.id, is_confirmed=True, deleted_at=None)
         data = []
         for user_group in user_groups:
             group = get_object_or_404(Group, id=user_group.group.id)
@@ -73,7 +73,7 @@ class GroupInviteListView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
-        invites = UserGroup.objects.filter(user=request.user.id, is_confirmed=False)
+        invites = UserGroup.objects.filter(user=request.user.id, is_confirmed=False, deleted_at=None)
         data = []
         for invite in invites:
             data.append({
