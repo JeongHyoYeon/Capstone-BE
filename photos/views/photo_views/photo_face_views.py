@@ -15,7 +15,7 @@ class PhotoFaceView(APIView):
     def get(self, request, trip):
         trip = get_object_or_404(Trip, id=trip)
         self.check_object_permissions(self.request, obj=trip)
-        trip_photos = Photo.objects.filter(trip=trip)
+        trip_photos = Photo.objects.filter(trip=trip, deleted_at=None)
         data = []
 
         tag_list = Photo.objects.filter(trip=trip).values_list('tag_face', 'tag_face__custom_name')
@@ -38,7 +38,7 @@ class PhotoFaceView(APIView):
     def post(self, request, trip):
         trip = get_object_or_404(Trip, id=trip)
         self.check_object_permissions(self.request, obj=trip)
-        photos = Photo.objects.filter(trip=trip).values('id', 'url')
+        photos = Photo.objects.filter(trip=trip, deleted_at=None).values('id', 'url')
         response = Response({"사진 자동분류를 요청하였습니다"}, status=status.HTTP_202_ACCEPTED)
         task = flask_post_request.apply_async(args=("face", photos), kwargs={'result': True})
 
@@ -52,7 +52,7 @@ class PhotoFaceDetailView(APIView):
 
     def get(self, request, trip, tag):
         self.check_object_permissions(self.request, obj=get_object_or_404(Trip, id=trip))
-        photos = Photo.objects.filter(trip=trip, tag_face=tag)
+        photos = Photo.objects.filter(trip=trip, tag_face=tag, deleted_at=None)
         data = {
             "tag": get_object_or_404(TagFace, id=tag).custom_name,
             "photos": PhotoReturnSerializer(photos, many=True).data

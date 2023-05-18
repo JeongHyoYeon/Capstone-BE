@@ -14,7 +14,7 @@ class PhotoUploaderView(APIView):
     def get(self, request, trip):
         trip = get_object_or_404(Trip, id=trip)
         self.check_object_permissions(self.request, obj=trip)
-        trip_photos = Photo.objects.filter(trip=trip)
+        trip_photos = Photo.objects.filter(trip=trip, deleted_at=None)
         data = []
 
         tag_list = trip_photos.values_list('uploaded_by', 'uploaded_by__name')
@@ -37,7 +37,7 @@ class PhotoUploaderDetailView(APIView):
 
     def get(self, request, trip, user):
         self.check_object_permissions(self.request, obj=get_object_or_404(Trip, id=trip))
-        photos = Photo.objects.filter(trip=trip, uploaded_by=user)
+        photos = Photo.objects.filter(trip=trip, uploaded_by=user, deleted_at=None)
         data = {
             "tag": get_object_or_404(User, id=user).name,
             "photos": PhotoReturnSerializer(photos, many=True).data

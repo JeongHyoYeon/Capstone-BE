@@ -14,7 +14,7 @@ class PhotoYoloView(APIView):
     def get(self, request, trip):
         trip = get_object_or_404(Trip, id=trip)
         self.check_object_permissions(self.request, obj=trip)
-        trip_photos = Photo.objects.filter(trip=trip)
+        trip_photos = Photo.objects.filter(trip=trip, deleted_at=None)
         data = []
 
         tag_list = trip_photos.values_list('tag_yolo', 'tag_yolo__tag_name_kr')
@@ -36,7 +36,7 @@ class PhotoYoloView(APIView):
     def post(self, request, trip):
         trip = get_object_or_404(Trip, id=trip)
         self.check_object_permissions(self.request, obj=trip)
-        photos = Photo.objects.filter(trip=trip, is_sorted_yolo=False).values('id', 'url')
+        photos = Photo.objects.filter(trip=trip, is_sorted_yolo=False, deleted_at=None).values('id', 'url')
 
         result = flask_post_request(endpoint="yolo", images=photos)
         if result.status_code == 200:
@@ -55,7 +55,7 @@ class PhotoYoloDetailView(APIView):
 
     def get(self, request, trip, tag):
         self.check_object_permissions(self.request, obj=get_object_or_404(Trip, id=trip))
-        photos = Photo.objects.filter(trip=trip, tag_yolo=tag)
+        photos = Photo.objects.filter(trip=trip, tag_yolo=tag, deleted_at=None)
         data = {
             "tag": get_object_or_404(TagYolo, id=tag).tag_name_kr,
             "photos": PhotoReturnSerializer(photos, many=True).data
