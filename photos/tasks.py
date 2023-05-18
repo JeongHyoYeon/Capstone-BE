@@ -18,15 +18,15 @@ def flask_post_request(endpoint, images):
     try:
         response = requests.post(url=url, json=data)
         if response.status_code == 200:
-            return response
+            save_results(response)
         else:
             return Response({"요쳥 실패"}, status=response.status_code)
     except requests.exceptions.RequestException as e:
         return Response({"요쳥 실패: " + str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-@shared_task
-def save_results(task_id):  # 콜백 함수
-    result = TaskResult.objects.get(task_id=task_id).result
+
+def save_results(flask_result):  # 콜백 함수
+    result = flask_result
     if result.status_code == 200:
         tag_id_list = []
         tag_num_list = []

@@ -41,10 +41,7 @@ class PhotoFaceView(APIView):
         photos = Photo.objects.filter(trip=trip, deleted_at=None).values('id', 'url')
         response = Response({"사진 자동분류를 요청하였습니다"}, status=status.HTTP_202_ACCEPTED)
 
-        task = flask_post_request.delay("face", photos)
-
-        response['X-Task-ID'] = task.id
-        save_results.delay(task.id)
+        flask_post_request.delay("face", photos)
 
         return response
 
