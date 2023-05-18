@@ -18,7 +18,7 @@ class PhotoView(APIView):
     def get(self, request, trip):
         self.check_object_permissions(self.request, obj=get_object_or_404(Trip, id=trip))
         # 날짜별로 묶어서 리턴
-        photos = Photo.objects.filter(trip=trip)
+        photos = Photo.objects.filter(trip=trip, deleted_at=None)
         dates = []
         data = [{
             "date": None,
@@ -98,7 +98,7 @@ class PhotoDetailView(APIView):
     permission_classes = [GroupMembersOnly]
 
     def get(self, request, photo):
-        photo = get_object_or_404(Photo, id=photo, deleted_at=None)
+        photo = get_object_or_404(Photo, id=photo)
         self.check_object_permissions(self.request, obj=get_object_or_404(Trip, id=photo.trip_id))
         serializer = PhotoReturnSerializer(photo)
         return Response(serializer.data, status=status.HTTP_200_OK)
