@@ -46,7 +46,7 @@ services:
       context: ./
       dockerfile: Dockerfile.prod
     restart: unless-stopped
-    command: celery multi start -A tripfriend worker --loglevel=info
+    command: celery multi start -A tripfriend worker1 worker2 worker3 --loglevel=info
     depends_on:
       - redis-server
     volumes:
