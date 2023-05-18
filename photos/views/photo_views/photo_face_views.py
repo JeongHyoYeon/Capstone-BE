@@ -46,7 +46,7 @@ class PhotoFaceView(APIView):
             tag_num_list = []
             result = result.json()
 
-            if result['groups'] == -1:
+            if result['group_idx_list'] == -1:
                 return Response({"얼굴 사진이 없습니다"}, status=status.HTTP_400_BAD_REQUEST)
 
             for image in result['images']:
