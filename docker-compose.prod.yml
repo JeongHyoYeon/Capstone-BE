@@ -47,6 +47,13 @@ services:
       dockerfile: Dockerfile.prod
     restart: unless-stopped
     command: celery multi start -A tripfriend worker1 worker2 worker3 --loglevel=info
+    environment:
+      DJANGO_SETTINGS_MODULE: tripfriend.settings.prod
+    env_file:
+      - .env
+    entrypoint:
+      - sh
+      - config/docker/entrypoint.prod.sh
     depends_on:
       - redis-server
     volumes:
