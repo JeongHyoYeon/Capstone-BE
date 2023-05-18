@@ -47,7 +47,7 @@ class PhotoFaceView(APIView):
             result = result.json()
 
             if result['group_idx_list'] == -1:
-                return Response({"얼굴 사진이 없습니다"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"얼굴 사진이 없습니다"}, status=status.HTTP_204_NO_CONTENT)
 
             for image in result['images']:
                 sorted_before = get_object_or_404(Photo, id=image['id']).tag_face
