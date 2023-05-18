@@ -56,8 +56,6 @@ services:
       - config/docker/entrypoint.prod.sh
     depends_on:
       - redis-server
-    volumes:
-      - ./:/home/app/
 
 volumes:
   static:
