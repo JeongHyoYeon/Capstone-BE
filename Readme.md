@@ -1,4 +1,5 @@
 # AfterTrip
+여행 후 그룹별 사진 공유의 불편함을 해결하기 위해 얼굴 인식, 객체 인식 AI를 이용해 폴더를 분류하는 사진 공유용 모바일 웹서비스
 > 현재 서버 종료된 상태입니다.
 
 ## 개발환경
@@ -15,7 +16,7 @@
 ![image](https://img.shields.io/badge/githubactions-2088FF?style=flat&logo=githubactions&logoColor=white)
 
 ## 기능 소개
-(organization readme 바로가기 링크?)
+[기능 소개 - Organization Readme](https://github.com/JeongHyoYeon#기능)
 
 ## ERD
 ![image](https://user-images.githubusercontent.com/86969518/236693791-f41020d2-c179-4852-a5f7-3dadd0ea4bb7.png)
