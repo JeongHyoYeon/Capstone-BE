@@ -1,9 +1,10 @@
 name: Deploy to EC2
 
-on:
-  push:
-    branches:
-      - main
+# 서버 종료
+#on:
+#  push:
+#    branches:
+#      - main
 
 jobs:
   build:
